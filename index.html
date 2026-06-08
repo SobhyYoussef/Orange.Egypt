@@ -1324,7 +1324,7 @@ body.light #page-volume .lg-item{color:#333}
 body.light .ykpi{background:#fff;border-color:#e0e0e0}
 body.light .ykpi::before{background:linear-gradient(135deg,rgba(82,126,219,.04),transparent)}
 body.light .ykpi-label{color:#333}
-body.light .ykpi-value{color:#000}
+body.light .ykpi-value{color:#c45200}
 body.light .ykpi-sub{color:#333}
 body.light .ykpi-trend.up{color:#32c832}
 body.light .ykpi-trend.down{color:#cd3c14}
@@ -2112,7 +2112,7 @@ nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.4)}
     break-inside: avoid !important;
   }
   .ykpi::before, .ykpi::after { display: none !important; }
-  .ykpi-value { text-shadow: none !important; color: #000 !important; font-size: 26px !important; }
+  .ykpi-value { text-shadow: none !important; color: #c45200 !important; font-size: 26px !important; }
   .ykpi-label { color: #000 !important; font-size: 9px !important; letter-spacing: 0.5px !important; }
   .ykpi-sub   { color: #000 !important; font-size: 10px !important; }
   .ykpi-trend.up   { color: #00875a !important; font-size: 10px !important; font-weight: 700 !important; }
@@ -3457,7 +3457,7 @@ body.light .ykpi{background:#fff !important;border:1px solid #dde3ef !important;
 body.light .ykpi::before,.light .ykpi::after{display:none !important}
 body.light .ykpi:hover{border-color:rgba(229,90,0,0.3) !important;transform:translateY(-1px) !important}
 body.light .ykpi-label{color:#000 !important}
-body.light .ykpi-value{color:#000 !important;text-shadow:none !important}
+body.light .ykpi-value{color:#c45200 !important;text-shadow:none !important}
 body.light .ykpi-sub{color:#000 !important}
 body.light .ykpi-trend.up{color:#00875a !important}
 body.light .ykpi-trend.down{color:#c50000 !important}
@@ -3554,7 +3554,7 @@ body.light .wow-neg{color:#000 !important}
 body.light .wow-neu{color:#000 !important}
 /* KPI values (all variants) */
 body.light .kpi-value{color:#000 !important}
-body.light .ykpi-value{color:#000 !important}
+body.light .ykpi-value{color:#c45200 !important}
 body.light .vkc-value{color:#000 !important}
 body.light .vsc-value{color:#000 !important}
 body.light .vol-hstat-val{color:#000 !important}
@@ -4094,7 +4094,7 @@ body.light .kpi.red    .kpi-value    { color: #c0001a !important; text-shadow: n
 body.light .kpi.yellow .kpi-value    { color: #8a6500 !important; text-shadow: none !important; }
 body.light .kpi.purple .kpi-value    { color: #6e28b8 !important; text-shadow: none !important; }
 body.light .ykpi-value {
-  color: #000 !important;
+  color: #c45200 !important;
   text-shadow: none !important;
 }
 body.light .ykpi-trend,
@@ -4243,9 +4243,27 @@ body.light #page-charts .util-name {
 
 /* ── Yearly Trends — KPI strip ── */
 body.light #page-charts3 .ykpi-value {
-  color: #000 !important;
+  color: #c45200 !important;
   text-shadow: none !important;
 }
+
+/* ── Yearly Trends KPI — per-card semantic colours matching Overview ── */
+body.light .ykpi.ykpi-teal   .ykpi-value { color: #007a72 !important; }
+body.light .ykpi.ykpi-green  .ykpi-value { color: #1e8c3a !important; }
+body.light .ykpi.ykpi-blue   .ykpi-value { color: #2563b0 !important; }
+body.light .ykpi.ykpi-orange .ykpi-value { color: #c45200 !important; }
+body.light .ykpi.ykpi-yellow .ykpi-value { color: #8a6500 !important; }
+body.light .ykpi.ykpi-red    .ykpi-value { color: #c0001a !important; }
+body.light .ykpi.ykpi-purple .ykpi-value { color: #6e28b8 !important; }
+
+/* Dark mode equivalents */
+.ykpi.ykpi-teal   .ykpi-value { color: #00e5d4; }
+.ykpi.ykpi-green  .ykpi-value { color: #00e5a0; }
+.ykpi.ykpi-blue   .ykpi-value { color: #00c8ff; }
+.ykpi.ykpi-orange .ykpi-value { color: #ff6600; }
+.ykpi.ykpi-yellow .ykpi-value { color: #ffcc00; }
+.ykpi.ykpi-red    .ykpi-value { color: #ff3355; }
+.ykpi.ykpi-purple .ykpi-value { color: #b66dff; }
 body.light #page-charts3 .ykpi-label,
 body.light #page-charts3 .ykpi-sub {
   color: #000 !important;
@@ -9809,17 +9827,17 @@ function buildYearlyKPIs(data) {
   const totalBWg = (totalBW/1000).toFixed(1);
   const avgBWPerSite = totalAccounts>0 ? (totalBW/1000/totalAccounts).toFixed(2) : 0;
   const kpis = [
-    { label:'Filtered Accounts', value: totalAccounts, sub: `${firstYear} – ${lastYear}` },
-    { label:'Total Bandwidth', value: totalBWg+'G', sub: 'bandwidth added' },
-    { label:'Peak Year (Count)', value: bestYear.year, sub: `${bestYear.count} accounts` },
-    { label:'Peak Year (BW)', value: bestBWYear.year, sub: `${(bestBWYear.bw/1000).toFixed(1)} Gbps` },
-    { label:'Avg per Year', value: avgPerYear, sub: 'accounts' },
-    { label:'Avg BW / Account', value: avgBWPerSite+'G', sub: 'across filtered set' },
-    { label:'Active Years', value: activeYears, sub: `${firstYear} to ${lastYear}` },
-    { label:'YoY Change', value: yoy!==null?(yoy>=0?'+':'')+yoy+'%':'—', sub: lastTwo.length===2?lastTwo[0].year+'→'+lastTwo[1].year:'', trend: yoy!==null?(yoy>=0?'up':'down'):''},
+    { label:'Filtered Accounts', value: totalAccounts, sub: `${firstYear} – ${lastYear}`, color:'teal' },
+    { label:'Total Bandwidth', value: totalBWg+'G', sub: 'bandwidth added', color:'purple' },
+    { label:'Peak Year (Count)', value: bestYear.year, sub: `${bestYear.count} accounts`, color:'green' },
+    { label:'Peak Year (BW)', value: bestBWYear.year, sub: `${(bestBWYear.bw/1000).toFixed(1)} Gbps`, color:'blue' },
+    { label:'Avg per Year', value: avgPerYear, sub: 'accounts', color:'orange' },
+    { label:'Avg BW / Account', value: avgBWPerSite+'G', sub: 'across filtered set', color:'yellow' },
+    { label:'Active Years', value: activeYears, sub: `${firstYear} to ${lastYear}`, color:'blue' },
+    { label:'YoY Change', value: yoy!==null?(yoy>=0?'+':'')+yoy+'%':'—', sub: lastTwo.length===2?lastTwo[0].year+'→'+lastTwo[1].year:'', trend: yoy!==null?(yoy>=0?'up':'down'):'', color: yoy!==null?(yoy>=0?'green':'red'):''},
   ];
   el.innerHTML = kpis.map(k=>`
-    <div class="ykpi">
+    <div class="ykpi ykpi-${k.color}">
       <div class="ykpi-label">${k.label}</div>
       <div class="ykpi-value">${k.value}</div>
       <div class="ykpi-sub">${k.sub}</div>
@@ -10116,11 +10134,11 @@ function toggleTheme() {
   document.getElementById('theme-icon-light').style.display = isLight ? 'block' : 'none';
   localStorage.setItem('dashboard-theme', isLight ? 'light' : 'dark');
 }
-// Restore saved theme — default is LIGHT
+// Restore saved theme — default is DARK
 (function() {
   const saved = localStorage.getItem('dashboard-theme');
-  // Default to light unless user has explicitly chosen dark
-  const isLight = saved !== 'dark';
+  // Default to dark unless user has explicitly chosen light
+  const isLight = saved === 'light';
   if(isLight) {
     document.body.classList.add('light');
     setTimeout(()=>{
