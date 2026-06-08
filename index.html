@@ -2485,10 +2485,11 @@ nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.4)}
   /* ── Alert banners (v2 style) — structured, WCAG-safe ── */
   #page-utilization .ut-alert-v2 {
     break-inside: avoid !important;
-    padding: 7px 12px !important;
+    padding: 7px 12px 7px 16px !important;
     margin-bottom: 6px !important;
     border-radius: 6px !important;
   }
+  #page-utilization .ut-alert-v2::before { display: none !important; }
   #page-utilization .ut-alert-v2.crit {
     background: #fff0f2 !important;
     border-color: #f5a0b0 !important;
@@ -2511,8 +2512,11 @@ nav.scrolled{box-shadow:0 4px 20px rgba(0,0,0,.4)}
     font-weight: 700 !important;
     letter-spacing: 0.4px !important;
   }
+  #page-utilization .ut-alert-severity { display: none !important; }
   #page-utilization .ut-alert-body  { color: #5a6a88 !important; font-size: 9.5px !important; line-height: 1.5 !important; }
-  #page-utilization .ut-alert-body strong { color: #1a2236 !important; font-weight: 700 !important; }
+  #page-utilization .cpill { background: rgba(0,0,0,.05) !important; border-color: rgba(0,0,0,.15) !important; }
+  #page-utilization .cpill-name { color: #1a2236 !important; }
+  #page-utilization .cpill-val  { color: #333 !important; }
   #page-utilization .ut-alert-icon  { font-size: 15px !important; margin-top: 0 !important; }
 
   /* ── Threshold guide strip — styled as a proper legend bar ── */
@@ -6128,21 +6132,93 @@ body.light #page-charts3  .chart-title {
 .thresh-strip{display:flex;gap:0;border-radius:6px;overflow:hidden;margin-bottom:14px;height:6px}
 .thresh-band{height:100%;transition:width .6s}
 
-/* Enhanced alert banners */
-.ut-alert-v2{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:10px;margin-bottom:10px;border:1px solid}
-.ut-alert-v2.crit{background:rgba(255,68,102,.07);border-color:rgba(255,68,102,.25)}
-.ut-alert-v2.warn{background:rgba(255,204,0,.07);border-color:rgba(255,204,0,.25)}
-.ut-alert-v2.good{background:rgba(0,229,160,.07);border-color:rgba(0,229,160,.25)}
-.ut-alert-v2.info{background:rgba(0,200,255,.07);border-color:rgba(0,200,255,.25)}
-.ut-alert-icon{font-size:20px;flex-shrink:0;line-height:1.2}
-.ut-alert-content{flex:1}
-.ut-alert-title{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:3px}
-.ut-alert-v2.crit .ut-alert-title{color:var(--cancelled)}
-.ut-alert-v2.warn .ut-alert-title{color:var(--hold)}
-.ut-alert-v2.good .ut-alert-title{color:var(--on-air)}
-.ut-alert-v2.info .ut-alert-title{color:var(--accent)}
-.ut-alert-body{font-size:11px;color:var(--muted);line-height:1.65}
-.ut-alert-body strong{color:var(--text)}
+/* ═══════════════════════════════════════════════════
+   ENHANCED ALERT BANNERS — V26
+   Left accent bar + severity gradient + pill badges
+═══════════════════════════════════════════════════ */
+.ut-alert-v2{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:13px 16px 13px 20px;
+  border-radius:10px;margin-bottom:10px;border:1px solid;
+  position:relative;overflow:hidden;
+  transition:box-shadow .2s,border-color .2s;
+}
+.ut-alert-v2::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:10px 0 0 10px;
+}
+.ut-alert-v2::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.018) 50%,transparent 100%);
+  pointer-events:none;
+}
+.ut-alert-v2:hover{box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.ut-alert-v2.crit{
+  background:linear-gradient(135deg,rgba(255,51,85,.10) 0%,rgba(255,51,85,.04) 100%);
+  border-color:rgba(255,51,85,.32);box-shadow:0 2px 12px rgba(255,51,85,.08);
+}
+.ut-alert-v2.crit::before{background:linear-gradient(180deg,#ff3355,#cc0022)}
+.ut-alert-v2.crit:hover{border-color:rgba(255,51,85,.5);box-shadow:0 4px 20px rgba(255,51,85,.15)}
+.ut-alert-v2.warn{
+  background:linear-gradient(135deg,rgba(255,204,0,.09) 0%,rgba(255,204,0,.03) 100%);
+  border-color:rgba(255,204,0,.30);box-shadow:0 2px 12px rgba(255,204,0,.06);
+}
+.ut-alert-v2.warn::before{background:linear-gradient(180deg,#ffcc00,#e6a800)}
+.ut-alert-v2.warn:hover{border-color:rgba(255,204,0,.48);box-shadow:0 4px 20px rgba(255,204,0,.12)}
+.ut-alert-v2.good{
+  background:linear-gradient(135deg,rgba(0,229,160,.08) 0%,rgba(0,229,160,.03) 100%);
+  border-color:rgba(0,229,160,.28);box-shadow:0 2px 12px rgba(0,229,160,.05);
+}
+.ut-alert-v2.good::before{background:linear-gradient(180deg,#00e5a0,#00b07a)}
+.ut-alert-v2.good:hover{border-color:rgba(0,229,160,.45);box-shadow:0 4px 20px rgba(0,229,160,.10)}
+.ut-alert-v2.info{
+  background:linear-gradient(135deg,rgba(0,200,255,.08) 0%,rgba(0,200,255,.03) 100%);
+  border-color:rgba(0,200,255,.28);box-shadow:0 2px 12px rgba(0,200,255,.05);
+}
+.ut-alert-v2.info::before{background:linear-gradient(180deg,#00c8ff,#0090c0)}
+.ut-alert-v2.info:hover{border-color:rgba(0,200,255,.45);box-shadow:0 4px 20px rgba(0,200,255,.10)}
+.ut-alert-icon{font-size:18px;flex-shrink:0;line-height:1.3;margin-top:1px}
+.ut-alert-content{flex:1;min-width:0}
+.ut-alert-title{
+  font-family:var(--font-head);font-size:13px;font-weight:700;
+  letter-spacing:.6px;margin-bottom:6px;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.ut-alert-v2.crit .ut-alert-title{color:#ff6680}
+.ut-alert-v2.warn .ut-alert-title{color:#ffd740}
+.ut-alert-v2.good .ut-alert-title{color:#00e5a0}
+.ut-alert-v2.info .ut-alert-title{color:#00c8ff}
+.ut-alert-severity{
+  font-size:9px;font-family:var(--font-mono);font-weight:600;
+  letter-spacing:1.2px;padding:1px 7px;border-radius:20px;margin-left:auto;flex-shrink:0;
+}
+.ut-alert-v2.crit .ut-alert-severity{background:rgba(255,51,85,.2);color:#ff3355;border:1px solid rgba(255,51,85,.35)}
+.ut-alert-v2.warn .ut-alert-severity{background:rgba(255,204,0,.15);color:#ffcc00;border:1px solid rgba(255,204,0,.35)}
+.ut-alert-v2.good .ut-alert-severity{background:rgba(0,229,160,.15);color:#00e5a0;border:1px solid rgba(0,229,160,.3)}
+.ut-alert-v2.info .ut-alert-severity{background:rgba(0,200,255,.15);color:#00c8ff;border:1px solid rgba(0,200,255,.3)}
+.ut-alert-body{font-size:11px;color:var(--muted);line-height:1.7}
+.ut-alert-body strong{color:var(--text);font-weight:600}
+.cpill{
+  display:inline-flex;align-items:center;gap:5px;
+  border-radius:6px;padding:3px 9px;font-size:11px;margin:2px 3px 2px 0;
+  border:1px solid;transition:background .15s;
+}
+.ut-alert-v2.crit .cpill{border-color:rgba(255,51,85,.25);background:rgba(255,51,85,.08)}
+.ut-alert-v2.warn .cpill{border-color:rgba(255,204,0,.22);background:rgba(255,204,0,.07)}
+.ut-alert-v2.info .cpill{border-color:rgba(0,200,255,.22);background:rgba(0,200,255,.07)}
+.cpill-name{font-family:var(--font-body);color:var(--text);font-weight:500}
+.cpill-val{font-family:var(--font-mono);font-weight:700}
+.ut-alert-v2.crit .cpill-val{color:#ff6680}
+.ut-alert-v2.warn .cpill-val{color:#ffd740}
+.ut-alert-v2.info .cpill-val{color:#5de0ff}
+.cpill-more{font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-left:4px;font-style:italic}
+body.light .ut-alert-v2.crit{background:linear-gradient(135deg,rgba(255,51,85,.07) 0%,rgba(255,51,85,.02) 100%);border-color:rgba(205,60,20,.3)}
+body.light .ut-alert-v2.warn{background:linear-gradient(135deg,rgba(255,204,0,.08) 0%,rgba(255,204,0,.02) 100%);border-color:rgba(200,150,0,.3)}
+body.light .ut-alert-v2.good{background:linear-gradient(135deg,rgba(0,180,120,.07) 0%,rgba(0,180,120,.02) 100%);border-color:rgba(0,160,100,.3)}
+body.light .ut-alert-v2.info{background:linear-gradient(135deg,rgba(0,150,200,.07) 0%,rgba(0,150,200,.02) 100%);border-color:rgba(0,130,180,.3)}
+body.light .ut-alert-v2.crit .ut-alert-title{color:#c0001e}
+body.light .ut-alert-v2.warn .ut-alert-title{color:#8a5a00}
+body.light .ut-alert-v2.good .ut-alert-title{color:#006644}
+body.light .ut-alert-v2.info .ut-alert-title{color:#005a88}
 
 /* Upload instruction card enhanced */
 /* Upload instruction card — removed in V039 */
@@ -6262,9 +6338,10 @@ body.light .util-stat-weeks{border-left-color:#a885d8;background:#faf8ff}
 body.light .util-stat-lbl{color:#333}
 
 /* ── Threshold guide badges ── */
-.ut-thresh-guide{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px}
-.ut-tg-label{color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-right:3px;font-size:9px}
-.ut-tg-item{padding:2px 9px;border-radius:4px;font-weight:600;letter-spacing:.3px;border:1px solid transparent}
+.ut-thresh-guide{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:6px 10px}
+.ut-tg-label{color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-right:4px;font-size:8.5px;font-weight:600}
+.ut-tg-item{padding:3px 10px;border-radius:5px;font-weight:600;letter-spacing:.4px;border:1px solid transparent;font-size:10px;cursor:default;transition:opacity .15s}
+.ut-tg-item:hover{opacity:.8}
 .ut-tg-ok  {background:#0a1a0a;color:#4caf50;border-color:rgba(76,175,80,.3)}
 .ut-tg-low {background:#0d3510;color:#66bb6a;border-color:rgba(102,187,106,.3)}
 .ut-tg-low2{background:#1a1800;color:#cddc39;border-color:rgba(205,220,57,.3)}
@@ -7491,24 +7568,20 @@ body.light .ut-tg-label{color:#333}
     const lastAbove = entries.filter(e=>e.lastUtil>=THRESH).sort((a,b)=>b.lastUtil-a.lastUtil);
     const avgAbove  = entries.filter(e=>e.avgOfMax>=THRESH).sort((a,b)=>b.avgOfMax-a.avgOfMax);
     const lastLabel = st.files[st.files.length-1]?.label||'Last Week';
-    const mkAlertList = (arr, field, colorVar, pctField) => {
-      const shown = arr.slice(0,5);
-      const rest  = arr.length - 5;
-      const rows  = shown.map(e=>`<span style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:3px 8px;font-size:11px;margin:2px">
-        <strong style="font-family:var(--font-body)">${esc(e.compound)}</strong>
-        <span style="color:${colorVar};font-family:var(--font-mono)">${e[field]}%</span>
-      </span>`).join('');
-      const more = rest > 0 ? `<span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-left:4px">+ ${rest} more — see heatmap below</span>` : '';
-      return `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:2px;margin-top:6px">${rows}${more}</div>`;
+    const mkPills = (arr, field, cls) => {
+      const shown = arr.slice(0,5), rest = arr.length - 5;
+      const pills = shown.map(e=>`<span class="cpill"><span class="cpill-name">${esc(e.compound)}</span><span class="cpill-val">${e[field]}%</span></span>`).join('');
+      const more  = rest > 0 ? `<span class="cpill-more">+${rest} more — see heatmap ↓</span>` : '';
+      return `<div style="display:flex;flex-wrap:wrap;align-items:center;margin-top:5px">${pills}${more}</div>`;
     };
     let html='';
     if (lastAbove.length) {
-      html += `<div class="ut-alert-v2 crit"><div class="ut-alert-icon">🔴</div><div class="ut-alert-content"><div class="ut-alert-title">⚠ ${lastAbove.length} Compound${lastAbove.length>1?'s':''} Above 80% in ${esc(lastLabel)}</div><div class="ut-alert-body">${mkAlertList(lastAbove,'lastUtil','var(--cancelled)')}</div></div></div>`;
+      html += `<div class="ut-alert-v2 crit"><div class="ut-alert-icon">🔴</div><div class="ut-alert-content"><div class="ut-alert-title">${lastAbove.length} Compound${lastAbove.length>1?'s':''} Above 80% in ${esc(lastLabel)}<span class="ut-alert-severity">CRITICAL</span></div><div class="ut-alert-body">${mkPills(lastAbove,'lastUtil','crit')}</div></div></div>`;
     }
     if (avgAbove.length) {
-      html += `<div class="ut-alert-v2 warn" style="margin-top:10px"><div class="ut-alert-icon">⚡</div><div class="ut-alert-content"><div class="ut-alert-title">📈 ${avgAbove.length} Compound${avgAbove.length>1?'s':''} — Avg of Max ≥ 80% Across All Weeks</div><div class="ut-alert-body">${mkAlertList(avgAbove,'avgOfMax','var(--hold)')}</div></div></div>`;
+      html += `<div class="ut-alert-v2 warn"><div class="ut-alert-icon">⚡</div><div class="ut-alert-content"><div class="ut-alert-title">${avgAbove.length} Compound${avgAbove.length>1?'s':''} — Avg of Max ≥ 80% Across All Weeks<span class="ut-alert-severity">WARNING</span></div><div class="ut-alert-body">${mkPills(avgAbove,'avgOfMax','warn')}</div></div></div>`;
     }
-    if(!html && entries.length) html = `<div class="ut-alert-v2 good"><div class="ut-alert-icon">✅</div><div class="ut-alert-content"><div class="ut-alert-title">All Compounds Within Normal Range — ${esc(lastLabel)}</div><div class="ut-alert-body">No compounds above 80% threshold. Fleet is healthy.</div></div></div>`;
+    if(!html && entries.length) html = `<div class="ut-alert-v2 good"><div class="ut-alert-icon">✅</div><div class="ut-alert-content"><div class="ut-alert-title">All Compounds Within Normal Range — ${esc(lastLabel)}<span class="ut-alert-severity">HEALTHY</span></div><div class="ut-alert-body">No compounds above 80% threshold this week. Fleet operating normally.</div></div></div>`;
     document.getElementById('ut-alerts').innerHTML = html;
   }
 
@@ -7614,15 +7687,25 @@ body.light .ut-tg-label{color:#333}
     if(alertRow){
       const lastF=st.files[st.files.length-1], criticals=lastF.data.filter(r=>r.util>=90);
       const warnings=lastF.data.filter(r=>r.util>=80&&r.util<90);
+      const mkRowPills=(arr,cls)=>{
+        const shown=arr.slice(0,3),rest=arr.length-3;
+        const pills=shown.map(r=>`<span class="cpill"><span class="cpill-name">${esc(r.compound)}</span><span class="cpill-val">${r.util}%</span></span>`).join('');
+        const more=rest>0?`<span class="cpill-more">+${rest} more</span>`:'';
+        return `<div style="display:flex;flex-wrap:wrap;align-items:center;margin-top:5px">${pills}${more}</div>`;
+      };
       let banners='';
-      if(criticals.length)banners+=`<div class="ut-alert-v2 crit" style="margin-bottom:8px"><div class="ut-alert-icon">🔴</div><div class="ut-alert-content"><div class="ut-alert-title">${criticals.length} compound(s) critical ≥90%</div><div class="ut-alert-body">${criticals.slice(0,3).map(r=>`<strong>${r.compound}</strong> <span style="color:var(--cancelled);font-family:var(--font-mono)">${r.util}%</span>`).join(' · ')}${criticals.length>3?` + ${criticals.length-3} more`:''}</div></div></div>`;
-      if(warnings.length)banners+=`<div class="ut-alert-v2 warn" style="margin-bottom:8px"><div class="ut-alert-icon">⚠️</div><div class="ut-alert-content"><div class="ut-alert-title">${warnings.length} compound(s) warning 80–90%</div><div class="ut-alert-body">${warnings.slice(0,3).map(r=>`<strong>${r.compound}</strong> <span style="color:var(--hold);font-family:var(--font-mono)">${r.util}%</span>`).join(' · ')}${warnings.length>3?` + ${warnings.length-3} more`:''}</div></div></div>`;
+      if(criticals.length)banners+=`<div class="ut-alert-v2 crit"><div class="ut-alert-icon">🔴</div><div class="ut-alert-content"><div class="ut-alert-title">${criticals.length} Compound${criticals.length>1?'s':''} Critical ≥90%<span class="ut-alert-severity">CRITICAL</span></div><div class="ut-alert-body">${mkRowPills(criticals,'crit')}</div></div></div>`;
+      if(warnings.length)banners+=`<div class="ut-alert-v2 warn"><div class="ut-alert-icon">⚠️</div><div class="ut-alert-content"><div class="ut-alert-title">${warnings.length} Compound${warnings.length>1?'s':''} Warning 80–90%<span class="ut-alert-severity">WARNING</span></div><div class="ut-alert-body">${mkRowPills(warnings,'warn')}</div></div></div>`;
       if(st.files.length>=2){
         const wowEnts=Object.values(buildMap()).map(e=>{const p=st.files[st.files.length-2].data.find(r=>r.compound===e.compound),l=st.files[st.files.length-1].data.find(r=>r.compound===e.compound);return(p&&l)?{compound:e.compound,delta:Math.round((l.util-p.util)*10)/10}:null;}).filter(Boolean);
         const bigJumps=wowEnts.filter(x=>x.delta>=10).sort((a,b)=>b.delta-a.delta);
-        if(bigJumps.length)banners+=`<div class="ut-alert-v2 info" style="margin-bottom:8px"><div class="ut-alert-icon">📈</div><div class="ut-alert-content"><div class="ut-alert-title">${bigJumps.length} compound(s) jumped ≥10% WoW</div><div class="ut-alert-body">${bigJumps.slice(0,3).map(x=>`<strong>${x.compound}</strong> <span style="color:var(--on-air);font-family:var(--font-mono)">+${x.delta}%</span>`).join(' · ')}${bigJumps.length>3?` + ${bigJumps.length-3} more`:''}</div></div></div>`;
+        if(bigJumps.length){
+          const jPills=bigJumps.slice(0,3).map(x=>`<span class="cpill"><span class="cpill-name">${esc(x.compound)}</span><span class="cpill-val">+${x.delta}%</span></span>`).join('');
+          const jMore=bigJumps.length>3?`<span class="cpill-more">+${bigJumps.length-3} more</span>`:'';
+          banners+=`<div class="ut-alert-v2 info"><div class="ut-alert-icon">📈</div><div class="ut-alert-content"><div class="ut-alert-title">${bigJumps.length} Compound${bigJumps.length>1?'s':''} Jumped ≥10% WoW<span class="ut-alert-severity">TRENDING</span></div><div class="ut-alert-body"><div style="display:flex;flex-wrap:wrap;align-items:center;margin-top:5px">${jPills}${jMore}</div></div></div></div>`;
+        }
       }
-      if(!banners&&lastF.data.length)banners='<div class="ut-alert-v2 good"><div class="ut-alert-icon">✅</div><div class="ut-alert-content"><div class="ut-alert-title">All compounds within normal thresholds — '+esc(lastF.label)+'</div><div class="ut-alert-body">No critical or warning alerts this week.</div></div></div>';
+      if(!banners&&lastF.data.length)banners=`<div class="ut-alert-v2 good"><div class="ut-alert-icon">✅</div><div class="ut-alert-content"><div class="ut-alert-title">All Compounds Within Normal Thresholds — ${esc(lastF.label)}<span class="ut-alert-severity">HEALTHY</span></div><div class="ut-alert-body">No critical or warning alerts this week.</div></div></div>`;
       alertRow.innerHTML=banners;
     }
   }
