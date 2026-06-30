@@ -4684,6 +4684,18 @@ body.light #page-charts3  .chart-title {
   var _loginAttempts = 0;
   var _loginLockedUntil = 0;
 
+  /* Session-duration policy: viewer accounts are auto-logged-out after
+     15 minutes. Admin accounts have no forced timeout. */
+  var VIEW_SESSION_MS = 15 * 60 * 1000;
+  var _viewSessionTimer = null;
+  function startViewSessionTimer() {
+    if (_viewSessionTimer) clearTimeout(_viewSessionTimer);
+    _viewSessionTimer = setTimeout(function() {
+      alert('Your 15-minute viewer session has expired. Please log in again.');
+      window.location.reload();
+    }, VIEW_SESSION_MS);
+  }
+
   /* SHA-256 via Web Crypto API */
   async function sha256(str) {
     var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
@@ -4872,7 +4884,11 @@ body.light #page-charts3  .chart-title {
       if (match) {
         _loginAttempts = 0;
         err.style.display = 'none';
-        if (match.role === 'view') { applyViewRole(); window._isViewRole = true; }
+        if (match.role === 'view') {
+          applyViewRole();
+          window._isViewRole = true;
+          startViewSessionTimer();
+        }
         closeWelcome();
       } else {
         _loginAttempts++;
