@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+<!-- STYLE UPDATE: July 30, 2026 (round 9 — hover shadow fix) — The global #no-shadows-override was stripping box-shadow from every element at all times with !important, including on :hover, which silently nullified every hover-glow rule already coded in the file (.kpi:hover, .ykpi:hover, .chart-card:hover, .btn-primary:hover, card/pill hover states across the Roadmap, Summary, Utilization and export-button sections). Changed the override's selector from `html body *` to `html body *:not(:hover)` (and the matching ::before/::after variants) so resting-state elements stay flat/shadow-free exactly as before, but each element's own hover rule is no longer blocked once :hover is no longer excluded by the override. No shadow values, colors, or resting-state appearance changed — purely restores hover interactivity that was already authored but inert. -->
+<!-- STYLE UPDATE: July 30, 2026 (round 8) — User-supplied screenshot of the live "New Accounts & Bandwidth Added Per Year" chart showed two leftover axis-subtitle labels, "ACCOUNTS (TP + BC stacked)" and "BANDWIDTH (GBPS)", rendered between the legend and the plot area — not present in the reference PNG at that spot. Found the same two lines duplicated in gaBuildAreaComboChart (the "By Area" chart), also absent from the reference there. Removed all 4 lines (2 per chart); no axis-label text now renders in either chart, matching the reference. No data, colors, or other layout touched. -->
 <!-- VALIDATED & UPDATED: July 22, 2026 — Full independent field-by-field rebuild of all 4 arrays from Triple_Play_Compounds_V094.xlsx, ignoring the V0391 changelog's "byte-for-byte unchanged" claim (that claim was FALSE for RAW and SUMMER_DATA — see below). 74 On-Air accounts / 142,340 Mbps total tie out exactly. RAW (TP_BC_Database, 99 records): 3 accounts gained site codes (Hassan Allam – Keys 52→7T11CA, Granoy→7P0FCA, Paragon 1→7P0GCA); 28 records had real content changes (not just whitespace) — 2 status corrections (7T0VCA and 7T0SCA had their statuses swapped back), 8 aggregation-name corrections (e.g. "Markaz El Madina" to "7723CA_MARKAZ MADINA"), and site-code prefixes added to about 20 MW route descriptions (e.g. "HOSSARY ML#8" to "8043UP-HOSSARY ML#8"); none of these changes affect the On-Air KPI totals. SUMMER_DATA (13 compounds, unchanged count): 2 typo fixes ("Compleated" to "Completed" on 7125RE, 7071RE). GA_UPGRADE_SITES (8 rows): independently re-verified as genuinely unchanged. ACTIVITY_DATA: the source sheet's structure changed — header moved from row 2 to row 1, and the Team, Mail Subject, Survey, Go Ahead, CW, Opposite LC, MW, and MW SUP columns no longer exist (workbook now has only Priority, Project Name, Site Code, Site Name, Status, Action, Accountability, Comment). Those fields are now blank in ACTIVITY_DATA for lack of a source column — a real capability loss versus prior dashboard versions, not a rendering choice. 8 rows removed (7267AL, 7804CA, 7340AL, 7296AL, 7755CA, 7242RE, 7290CA, 7881CA — no longer in the workbook), 9 rows added (7P01CA, 7T0SCA, 7P08CA-7P0DCA, 7P0GCA, Granoy, 7T0FCA, 7T0HCA, 7T0VCA, 7T11CA), row count 30 to 31. -->
 <!-- STYLE UPDATE: July 28, 2026 — Dark-mode page/chart-card background palette changed from neutral gray-black (--bg:#0b0c0f / --card:#15171c) to deep navy-blue (--bg:#030a15 / --card:#0a1928 / --card2:#0e2135) to match a reference design image; header/nav gradients and the Summary page section-header banners updated to match. Follow-up deep check: found and fixed one remaining hardcoded slate-blue gradient on the "19 / 55" circular KPI badges (.sum-badge-circle, was #2c3754/#1c2440/#11162a) to match the same navy tone. Verified via rendered screenshots across the full Summary page (mission banner, all KPI/badge cards, all chart cards, capacity-upgrade and developer-partner sections) — no other hardcoded off-palette backgrounds remain. No data arrays touched. -->
 <!-- STYLE UPDATE: July 28, 2026 (round 2) — Deep recheck of chart/line/marker colors and late-cascade "solidify panels" overrides that were still forcing the OLD neutral-black palette with !important and silently winning over the --card/--bg variables: header/nav/global-filter-bar were still #0d0a06/#07090f (near-black, off-navy), .kpi solid fallback was #111520, chart-tooltip was #161c2a, welcome-overlay/upload-overlay/kpi-panel-overlay scrims were #04060e/#04050a, and the PNG/PDF export backgroundColor and the KPI side-drawer gradient were still #0a0c12/#0f1320→#0b0e14. All updated to the new navy set (header/nav/filter-bar #051220, .kpi #0a1928, tooltip #0e2135, overlays/exports #030a15, side-drawer gradient #0e2135→#030a15). Also fixed the line-chart data-point "cutout ring" stroke color (#0a0c12/#0b0e14 → #0a1928) so dots no longer show a mismatched dark halo against the new navy card background. Verified numerically via pixel sampling of re-rendered screenshots. -->
 <!-- VALIDATION: July 28, 2026 — Full text/number audit of the rendered Summary page: extracted every visible string via DOM inner_text and cross-checked each KPI, chart value, CAGR, before/after upgrade figure, and label against source data — all confirmed exact (19 Business Complexes, 55 Triple Play Compounds, 99 total accounts, 142.3 Gbps, +129.0 Gbps growth, 8 capacity upgrades, TP 55/BC 19/142.2-142.4 Gbps, West Cairo top area 23 accounts, CAGR +28.7%/+32.6%/+36.4%/+58.1%, all 8 before/after upgrade rows, +5.95 Gbps/+17.4% summary, Capital East fastest-growing +120%, full developer-partner list). Full-file scan for any remaining non-navy dark hex confirmed clean (old --border #262931/#33373f and old card/bg grays fully gone). Chart series colors (orange/blue/gray/green per series) were already on-brand and unchanged from the reference. -->
 <!-- STYLE UPDATE: July 28, 2026 (round 3) — Pixel-sampled the reference design PNG directly (median RGB over flat patches, not eyeballed): the reference's chart-card fill (.ga-chart-card, used by the "Accounts & Bandwidth Growth" / "By Area" / "Accounts Growth YoY" / "Bandwidth Provided YoY" panels) reads ~#05121c-#071018 — i.e. nearly flush with the page background, distinguished mainly by its border, not the visibly lighter/bluer #0a1928 the card variable held before. Darkened --card from #0a1928 to #071420 to match. Propagated the same fix to the 4 remaining hardcoded #0a1928 references that exist specifically to shadow/halo-match the card fill (line-chart data-point cutout-ring strokes at two chart-drawing call sites, the .kpi solid-fallback override, and the #imap-legend/#imap-statsbar background override) so dots and KPI chips don't show a mismatched halo against the newly darker card. Left the one remaining #0a1928 reference alone (the decorative radial-gradient middle stop on the circular "19/55" KPI badges) since that's a distinct illustrative gradient, not a flat card fill, and reads correctly as-is. --card2 (#0e2135, used by the slightly-lighter KPI-strip chips) was already a close match to its sampled reference patch (~#0f1d28) and was left unchanged. No data arrays, layout, or chart logic touched. -->
+<!-- STYLE UPDATE: July 29, 2026 (round 7 — blue color match) — Sampled the actual blue pixel values used in the reference PNG's chart bars/lines (average of all saturated-blue pixels ≈ #1b56b6) and replaced the dashboard's previous lighter blues (#2f6fed / #5b8def / #5b8fe0) with a closer match (#2159c9, with a #6f9ce8 lighter tint for gradient tops and secondary bars) across every Triple-Play/"TP" series in the Summary tab's Accounts & Bandwidth Growth charts: the Yearly combo chart, the Area (New Accounts & Bandwidth Added) chart, the By Area chart, and both "Bandwidth Provided YoY" combo charts (TP and BC) plus their CAGR pill/label CSS colors and legend dots. Left orange (#ff7900) and gray (#c7c9cf) series untouched, and left unrelated UI elements elsewhere in the file (filter chips, toasts, the Activity tab, MW-route badges) on the old #5b8def since those aren't part of the charts being matched. -->
+<!-- STYLE UPDATE: July 29, 2026 (round 6 — deep investigation) — Went beyond colors/layout to check every icon and header element against the reference PNG at high zoom. Found and fixed four real gaps: (1) the reference header row has "Internet / Telephony / TV" service icons plus a "2014 – 2026" date-range badge on the right side of the mission banner — the banner previously rendered left-side content only (logo+title) with nothing on the right; added the icon row and date badge, changed the banner to justify-content:space-between, with responsive rules to wrap/hide gracefully below 900px/720px. (2) The reference's "19"/"55" circular badges each show a small building icon above the number — the badges had no icon at all; added a two-tower building glyph (matching the icon style used elsewhere in the file) above both badge numbers. (3) The "Years Covered" KPI card used a 3-bar icon; the reference shows a calendar icon — swapped to GA_ICONS.calendar (shared function, so this also improves the standalone Growth Report tab's identical KPI strip). (4) The "Capacity Upgrades" KPI card used a plain circle+dot icon; the reference shows an arrow-up-in-circle — replaced with a matching arrow-up-circle glyph, values/colors untouched. No data arrays touched. -->
+<!-- STYLE UPDATE: July 29, 2026 (round 5) — Re-compared the Summary page's Growth-Report embed against the reference PNG layout (not just colors this time) and found two real structural mismatches: (1) the reference shows "By Area — Accounts & Bandwidth (On-Air)" as the leftmost card in a single 3-column row alongside "Accounts Growth YoY" and "Bandwidth Provided YoY (Gbps)", with no subheader between them — the dashboard instead rendered "By Area" as its own full-width card followed by an extra "🏘️ Orange Triple Play Compounds" section header before the other two. Merged all three into one `grid-template-columns:1fr 1fr 1fr` row and removed the extra header (with responsive breakpoints collapsing to 2-col/1-col on narrow widths), matching the reference exactly. (2) The reference's first-row left chart ("Yearly New Accounts & Bandwidth Added" section) shows only the legend directly under the shared section title, with no separate per-card label — the dashboard had an extra "AREA — ACCOUNTS & BANDWIDTH (ON-AIR)" label on that card; removed it. Both fixes were applied only inside #summary-growth-embed (the Summary tab's independent -sc-suffixed copy); the standalone Growth Report tab (#page-growth) was left untouched since it's a separate duplicated block with its own ids and isn't what the reference image depicts. No data, chart logic, or colors touched. -->
 <!-- STYLE UPDATE: July 28, 2026 (round 4) — Audited every one of the dashboard's 12 tab pages (#page-overview/charts/charts2/charts3/report/mwroutes/roadmap/summary/summer/activity/growth/map) for background consistency against the reference image. All correctly inherit the deep-navy body background (var(--bg), #030a15) via the shared .page rule except one outlier: #page-growth (the standalone "📈 Growth Report" nav tab) had its own explicit `background:var(--card2)` override, making that one page render a visibly lighter blue-gray than every other page and than the reference. Changed it to `background:var(--bg)` so it matches. (The same Growth Report content, embedded inline inside the Summary page as #summary-growth-embed, was already correct — its wrapper uses `background:transparent` and inherits the page's navy fine; only the standalone tab had the mismatch.) No other page had a background override; #page-charts3's .ykpi cards use their own intentionally-lighter card shade (unrelated to page background) and were left untouched. -->
 
 <html lang="en">
@@ -9390,7 +9395,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       .sum-section-header.sum-mission-banner {
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: space-between;
         gap: 16px;
         padding: 10px 26px 9px;
         margin: 0 36px;
@@ -9398,17 +9403,12 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         text-align: left;
         position: relative;
         overflow: hidden;
-        background: linear-gradient(90deg, #030a15 0%, #0e2135 30%, #0e2135 70%, #030a15 100%);
+        background: #0e2135;
         border: 1px solid rgba(255,121,0,0.18);
         box-shadow: 0 10px 28px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05);
       }
       .sum-mission-banner::before {
-        content: '';
-        position: absolute; top: 0; left: -45%; width: 32%; height: 100%;
-        background: linear-gradient(100deg, transparent 0%, rgba(255,121,0,0.10) 42%, rgba(255,255,255,0.07) 50%, transparent 100%);
-        transform: skewX(-18deg);
-        animation: sumBannerSheen 8s ease-in-out infinite;
-        pointer-events: none;
+        display: none;
       }
       .sum-mission-banner::after {
         content: '';
@@ -9416,13 +9416,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         background: linear-gradient(90deg, transparent 0%, var(--orange) 50%, transparent 100%);
         opacity: 0.55;
       }
-      @keyframes sumBannerSheen {
-        0%, 12% { left: -45%; }
-        55%, 100% { left: 130%; }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        .sum-mission-banner::before { animation: none; display: none; }
-      }
+
       .sum-mb-left {
         display: flex; align-items: center; gap: 16px;
         min-width: 0; z-index: 1;
@@ -9493,7 +9487,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         opacity: 0.62; margin-top: 2px;
       }
       body.light .sum-section-header.sum-mission-banner {
-        background: linear-gradient(90deg, #08090e 0%, #111620 30%, #111620 70%, #08090e 100%) !important;
+        background: #111620 !important;
       }
       @media (max-width: 720px) {
         .sum-section-header.sum-mission-banner { flex-wrap: wrap; padding: 10px 18px 9px; }
@@ -9502,6 +9496,27 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       }
       @media (max-width: 460px) {
         .sum-mb-line1 .sum-mb-brand, .sum-mb-line1 .sum-mb-word { font-size: 21px; }
+      }
+
+      /* ── Mission banner right side: service icons + date range (matches reference header) ── */
+      .sum-mb-right {
+        display: flex; align-items: center; gap: 22px; flex-shrink: 0;
+        z-index: 1;
+      }
+      .sum-mb-svc {
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+      }
+      .sum-mb-svc svg { width: 28px; height: 28px; color: rgba(255,255,255,0.88); }
+      .sum-mb-svc span {
+        font-size: 9px; font-weight: 600; letter-spacing: 0.04em;
+        color: rgba(255,255,255,0.7); font-family: var(--font-body);
+        white-space: nowrap;
+      }
+      @media (max-width: 900px) {
+        .sum-mb-right { gap: 14px; }
+      }
+      @media (max-width: 720px) {
+        .sum-mb-right { order: 3; width: 100%; justify-content: center; padding-top: 6px; }
       }
 
       /* ── Masthead eyebrow (live status line) ── */
@@ -9593,30 +9608,34 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       .sum-mg-left-col .sum-badge-circle { align-self: center; }
       .sum-mg-right-col .sum-badge-circle { align-self: center; }
       /* Badges scale with viewport */
+      /* Badge card — horizontal card matching the service-card style below it:
+         ring-icon on the left, big number + uppercase label stacked on the right */
       .sum-badge-circle {
-        width: 14vw;
-        height: 14vw;
-        min-width: 110px;
-        min-height: 110px;
-        max-width: 220px;
-        max-height: 220px;
-        border-radius: 50%;
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        min-width: 0;
+        min-height: 0;
+        max-height: none;
+        border-radius: 14px;
         flex-shrink: 0;
-        background: radial-gradient(circle at 35% 30%, #14273f 0%, #0a1928 55%, #050f1c 100%);
-        border: clamp(6px, 0.8vw, 12px) solid #ff7900;
-        box-shadow: 0 8px 26px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,121,0,0.15);
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        text-align: center;
+        background: linear-gradient(135deg, var(--card2) 0%, rgba(255,255,255,0.02) 100%);
+        border: 1.5px solid rgba(255,121,0,0.45);
+        box-shadow: 0 8px 26px rgba(0,0,0,0.28);
+        display: flex; flex-direction: row; align-items: center; justify-content: flex-start;
+        gap: 14px;
+        text-align: left;
+        padding: 12px 18px;
         position: relative;
         transition: transform .3s ease, box-shadow .3s ease;
       }
       .sum-badge-circle:hover {
-        transform: translateY(-2px) scale(1.02);
-        box-shadow: 0 12px 32px rgba(255,121,0,0.22), 0 0 0 1px rgba(255,121,0,0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 26px rgba(255,121,0,0.20);
       }
       body.light .sum-badge-circle {
-        background: #ffffff;
-        box-shadow: 0 8px 26px rgba(0,0,0,0.10), 0 0 0 1px rgba(255,121,0,0.15);
+        background: linear-gradient(135deg, #ffffff 0%, #f7f7f9 100%);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       }
       body.light .sum-badge-num {
         color: #1a1a1a;
@@ -9625,22 +9644,50 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       body.light .sum-badge-label {
         color: #a85f00;
       }
-      .sum-badge-circle::after {
+      .sum-badge-circle::after { display: none; }
+      /* Ring-icon: fixed circular chip with a partial orange progress-ring border */
+      .sum-badge-icon {
+        flex-shrink: 0;
+        width: clamp(56px, 5.4vw, 78px); height: clamp(56px, 5.4vw, 78px);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 0;
+        position: relative;
+        background: radial-gradient(circle at 35% 30%, #14273f 0%, #0a1928 55%, #050f1c 100%);
+        box-shadow: 0 0 0 1.5px rgba(255,121,0,0.20) inset;
+      }
+      .sum-badge-icon::before {
         content: '';
-        position: absolute; inset: -16px; border-radius: 50%;
-        border: 1px solid rgba(255,121,0,0.20);
+        position: absolute; inset: -6px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,121,0,0.18);
+        border-top-color: var(--orange);
+        border-right-color: var(--orange);
         pointer-events: none;
+      }
+      body.light .sum-badge-icon {
+        background: radial-gradient(circle at 35% 30%, #fff 0%, #f5f5f7 100%);
+      }
+      .sum-badge-icon svg {
+        width: clamp(24px, 2.5vw, 34px); height: clamp(24px, 2.5vw, 34px);
+        color: var(--orange);
+        filter: drop-shadow(0 0 6px rgba(255,121,0,0.45));
+      }
+      .sum-badge-textcol {
+        display: flex; flex-direction: column; align-items: flex-start;
+        gap: 2px; min-width: 0;
       }
       .sum-badge-num {
         font-family: var(--font-head);
-        font-size: clamp(28px, 4.5vw, 72px); font-weight: 900; color: #fff;
-        line-height: 1; letter-spacing: -2px;
+        font-size: clamp(22px, 2.6vw, 34px); font-weight: 900; color: #fff;
+        line-height: 1; letter-spacing: -1px;
         text-shadow: 0 2px 8px rgba(0,0,0,0.35);
       }
       .sum-badge-label {
         font-family: var(--font-head);
-        font-size: clamp(10px, 1.1vw, 16px); font-weight: 700; color: #fff;
-        line-height: 1.35; margin-top: 7px;
+        font-size: clamp(10.5px, 1.05vw, 14px); font-weight: 800; color: #fff;
+        line-height: 1.3; margin-top: 2px;
+        text-transform: uppercase; letter-spacing: 0.3px;
       }
       /* Illustration: centre column */
       .sum-mg-illustration-wrap {
@@ -9666,7 +9713,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       body:not(.light) .sum-mg-illustration-light { display: none !important; }
       /* Blend the dark illustration's black background into the page background */
       body:not(.light) .sum-mg-illustration-wrap {
-        background: #0F0F12 !important;
+        background: var(--bg) !important;
       }
       .sum-mg-illustration-dark {
         mix-blend-mode: screen;
@@ -9682,6 +9729,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       }
       .sum-mg-col.left  { align-items: center; }
       .sum-mg-col.right { align-items: center; }
+      body.light .sum-badge-icon::before { border-color: rgba(255,121,0,0.20); border-top-color: var(--orange); border-right-color: var(--orange); }
       .sum-mg-centre-spacer { display: none; }
 
       /* Card wrapper — no longer needs top padding, arm now lives inside the card */
@@ -9710,21 +9758,21 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         background: linear-gradient(135deg, var(--card2) 0%, rgba(255,255,255,0.02) 100%);
         transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
       }
-      .sum-mg-col.left  .sum-mg-pill { justify-content: center; text-align: center; }
-      .sum-mg-col.right .sum-mg-pill { justify-content: center; text-align: center; }
+      .sum-mg-col.left  .sum-mg-pill { justify-content: flex-start; text-align: left; }
+      .sum-mg-col.right .sum-mg-pill { justify-content: flex-start; text-align: left; }
       .sum-mg-pill:hover { transform: translateY(-3px); }
-      .sum-mg-pill.dark   { border: 1.5px solid rgba(255,255,255,0.16); color: var(--text); }
+      .sum-mg-pill.dark   { border: 1.5px solid rgba(255,255,255,0.16); color: #ffffff; }
       .sum-mg-pill.dark:hover   { border-color: rgba(255,255,255,0.4); box-shadow: 0 10px 24px rgba(0,0,0,0.32); }
       .sum-mg-pill.orange { border: 1.5px solid rgba(255,121,0,0.45); color: var(--orange); }
       .sum-mg-pill.orange:hover { border-color: var(--orange); box-shadow: 0 10px 26px rgba(255,121,0,0.20); }
       /* icon chip wrapping the svg */
       .sum-mg-pill svg {
-        width: clamp(17px, 1.6vw, 22px); height: clamp(17px, 1.6vw, 22px); flex-shrink: 0;
+        width: clamp(24px, 2.2vw, 30px); height: clamp(24px, 2.2vw, 30px); flex-shrink: 0;
         position: relative; z-index: 1;
       }
       .sum-mg-icon-chip {
         flex-shrink: 0;
-        width: clamp(32px, 2.6vw, 40px); height: clamp(32px, 2.6vw, 40px);
+        width: clamp(44px, 3.6vw, 54px); height: clamp(44px, 3.6vw, 54px);
         border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
       }
@@ -9732,19 +9780,20 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       .sum-mg-pill.orange .sum-mg-icon-chip { background: radial-gradient(circle at 35% 30%, rgba(255,121,0,0.30), rgba(255,121,0,0.06)); border: 1.5px solid rgba(255,121,0,0.55); }
 
       /* Title + description stack */
-      .sum-mg-card-title-row { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+      .sum-mg-card-title-row { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+      .sum-mg-card-title-row > span { text-transform: uppercase; letter-spacing: 0.3px; }
 
       /* Description text below each pill title */
       .sum-mg-desc {
         font-family: var(--font-mono);
-        font-size: clamp(10.5px, 0.98vw, 12.5px); color: var(--muted); line-height: 1.5;
+        font-size: clamp(10.5px, 0.98vw, 12.5px); color: #ffffff; line-height: 1.5;
         font-weight: 500;
         max-width: 100%;
         letter-spacing: 0;
         text-transform: none;
       }
       .sum-mg-col.left  .sum-mg-desc,
-      .sum-mg-col.right .sum-mg-desc { text-align: center; }
+      .sum-mg-col.right .sum-mg-desc { text-align: left; }
 
       /* legacy compat */
       .sum-circ-row, .sum-circ-row-r { display: flex; align-items: center; gap: 12px; width: 100%; }
@@ -9767,16 +9816,16 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       }
       .sum-mission-desc-icon {
         flex-shrink: 0;
-        width: 44px; height: 44px;
-        border-radius: 10px;
+        width: 56px; height: 56px;
+        border-radius: 12px;
         background: var(--orange);
         display: flex; align-items: center; justify-content: center;
         color: #fff;
       }
-      .sum-mission-desc-icon svg { width: 22px; height: 22px; }
+      .sum-mission-desc-icon svg { width: 28px; height: 28px; }
       .sum-mission-desc {
         font-size: clamp(12px, 1.1vw, 16px);
-        color: var(--muted);
+        color: #ffffff;
         line-height: 1.8;
         text-align: justify;
         max-width: 100%;
@@ -9907,6 +9956,20 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
               </div>
             </div>
           </div>
+          <div class="sum-mb-right">
+            <div class="sum-mb-svc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+              <span>Internet</span>
+            </div>
+            <div class="sum-mb-svc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span>Telephony</span>
+            </div>
+            <div class="sum-mb-svc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="13" rx="2.2"/><path d="M8 21h8M12 17.5V21"/><polygon points="10.2,8.3 15.2,11 10.2,13.7" fill="currentColor" stroke="none"/></svg>
+              <span>TV</span>
+            </div>
+          </div>
         </div>
         <div class="sum-mission-body">
 
@@ -9916,8 +9979,11 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
             <!-- LEFT COLUMN: badge on top, service cards stacked below -->
             <div class="sum-mg-left-col">
               <div class="sum-badge-circle">
-                <div class="sum-badge-num" id="mission-badge-bc">19</div>
-                <div class="sum-badge-label">Business<br>Complexes</div>
+                <div class="sum-badge-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="7" height="12"/><rect x="12" y="4" width="9" height="17"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="6" y1="15" x2="6" y2="15.01"/><line x1="6" y1="18" x2="6" y2="18.01"/><line x1="15" y1="7" x2="15" y2="7.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="15" y1="13" x2="15" y2="13.01"/><line x1="15" y1="16" x2="15" y2="16.01"/><line x1="18" y1="7" x2="18" y2="7.01"/><line x1="18" y1="10" x2="18" y2="10.01"/><line x1="18" y1="13" x2="18" y2="13.01"/><line x1="18" y1="16" x2="18" y2="16.01"/></svg></div>
+                <div class="sum-badge-textcol">
+                  <div class="sum-badge-num" id="mission-badge-bc">19</div>
+                  <div class="sum-badge-label">Business<br>Complexes</div>
+                </div>
               </div>
               <!-- Left service cards -->
               <div class="sum-mg-col left">
@@ -9962,8 +10028,11 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
             <!-- RIGHT COLUMN: badge on top, service cards stacked below -->
             <div class="sum-mg-right-col">
               <div class="sum-badge-circle">
-                <div class="sum-badge-num" id="mission-badge-tp">55</div>
-                <div class="sum-badge-label">Triple Play<br>Compounds</div>
+                <div class="sum-badge-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="7" height="12"/><rect x="12" y="4" width="9" height="17"/><line x1="6" y1="12" x2="6" y2="12.01"/><line x1="6" y1="15" x2="6" y2="15.01"/><line x1="6" y1="18" x2="6" y2="18.01"/><line x1="15" y1="7" x2="15" y2="7.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="15" y1="13" x2="15" y2="13.01"/><line x1="15" y1="16" x2="15" y2="16.01"/><line x1="18" y1="7" x2="18" y2="7.01"/><line x1="18" y1="10" x2="18" y2="10.01"/><line x1="18" y1="13" x2="18" y2="13.01"/><line x1="18" y1="16" x2="18" y2="16.01"/></svg></div>
+                <div class="sum-badge-textcol">
+                  <div class="sum-badge-num" id="mission-badge-tp">55</div>
+                  <div class="sum-badge-label">Triple Play<br>Compounds</div>
+                </div>
               </div>
               <!-- Right service cards -->
               <div class="sum-mg-col right">
@@ -10009,9 +10078,70 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
       <!-- ── V0166: Growth Report sections copied into Summary tab ── -->
       <div id="summary-growth-embed" style="margin-top:0px;">
       <style>
-        #summary-growth-embed .ga-header{background:transparent;border-bottom:none;padding:4px 36px;}
+        #summary-growth-embed .ga-header{background:transparent;border-bottom:none;padding:0px 36px 4px;margin-top:-24px;}
         #summary-growth-embed .ga-header-kpis{padding:0 36px 8px;}
         #summary-growth-embed .ga-content{padding:8px 36px 12px;}
+
+        /* ── Compact mode: shrink the whole embed so Yearly/Area/Growth/BC/Upgrade
+           sections read as one dense overview instead of the full-size Growth
+           Report tab spacing. Site-Level Upgrade Detail cards are dropped from
+           this condensed view entirely, and Business Complexes + Capacity
+           Upgrades are placed side-by-side in one row. ── */
+        #summary-growth-embed .ga-section-head{ margin:16px 0 10px; }
+        #summary-growth-embed .ga-section-head:first-child{ margin-top:0; }
+        #summary-growth-embed .ga-section-title{ font-size:12px; }
+        #summary-growth-embed .ga-chart-grid{ gap:10px; margin-bottom:14px; }
+        #summary-growth-embed .ga-chart-card{ padding:10px 12px 8px; border-radius:9px; }
+        #summary-growth-embed .ga-chart-label{ font-size:10.5px !important; padding-bottom:5px !important; margin-bottom:6px !important; }
+        #summary-growth-embed .ga-legend-row{ font-size:8.5px !important; gap:8px; margin-bottom:4px; }
+        #summary-growth-embed .ga-legend-dot{ width:6px; height:6px; }
+        #summary-growth-embed .ga-chart-footer{ margin-top:6px; gap:6px; }
+        #summary-growth-embed .ga-cagr-pill{ font-size:8.5px; padding:2px 6px; }
+        #summary-growth-embed .ga-cagr-val{ font-size:11px; }
+        #summary-growth-embed .ga-stat-box{ padding:5px 8px !important; min-width:76px !important; }
+        #summary-growth-embed .ga-stat-label{ font-size:7.5px !important; }
+        #summary-growth-embed .ga-stat-value{ font-size:12px !important; }
+        #summary-growth-embed .ga-stat-box.peak .ga-stat-value{ font-size:10px !important; }
+        #summary-growth-embed .ga-upgrade-grid{ gap:10px; }
+        #summary-growth-embed .ga-upgrade-grid .ga-chart-card{ padding:10px 12px 8px; border-radius:9px; }
+        #summary-growth-embed .ga-chart-sub{ font-size:8.5px; margin-bottom:4px; }
+        #summary-growth-embed .ga-upg-list{ gap:8px; }
+        #summary-growth-embed .ga-upg-row{ grid-template-columns:105px 1fr 82px; gap:6px; }
+        #summary-growth-embed .ga-upg-name{ font-size:9.5px; }
+        #summary-growth-embed .ga-upg-track{ height:8px; }
+        #summary-growth-embed .ga-upg-fill{ height:8px; }
+        #summary-growth-embed .ga-upg-stats{ font-size:8px; gap:4px; }
+        #summary-growth-embed .ga-upg-stats b{ font-size:9px; }
+        #summary-growth-embed .ga-upg-pct{ font-size:8px; padding:1.5px 6px; }
+        #summary-growth-embed .ga-bc-upgrade-row{
+          display:grid; grid-template-columns:repeat(3, 1fr); grid-template-rows:auto 1fr;
+          column-gap:10px; row-gap:10px; align-items:stretch;
+        }
+        #summary-growth-embed .ga-bc-upgrade-head-l{ grid-column:1 / 3; grid-row:1; margin:0; }
+        #summary-growth-embed .ga-bc-upgrade-head-r{ grid-column:3 / 4; grid-row:1; margin:0; }
+        #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card{ grid-row:2; height:100%; }
+        /* Center the chart within any extra stretched height instead of leaving it pinned
+           to the top with blank space below — footer stays pinned to the bottom. */
+        #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:not(.ga-upgrade-chart-card){ display:flex; flex-direction:column; }
+        #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:not(.ga-upgrade-chart-card) > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer){ flex:1; display:flex; align-items:center; }
+        #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:not(.ga-upgrade-chart-card) > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer) > svg{ width:100%; }
+        #summary-growth-embed .ga-bc-upgrade-row .ga-chart-footer{ margin-top:auto; }
+        @media (max-width:1100px){
+          #summary-growth-embed .ga-bc-upgrade-row{ grid-template-columns:1fr 1fr; grid-template-rows:auto auto auto; }
+          #summary-growth-embed .ga-bc-upgrade-head-l{ grid-column:1 / 3; grid-row:1; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:nth-of-type(1){ grid-column:1; grid-row:2; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:nth-of-type(2){ grid-column:2; grid-row:2; }
+          #summary-growth-embed .ga-bc-upgrade-head-r{ grid-column:1 / 3; grid-row:3; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-upgrade-chart-card{ grid-column:1 / 3; grid-row:4; }
+        }
+        @media (max-width:640px){
+          #summary-growth-embed .ga-bc-upgrade-row{ grid-template-columns:1fr; }
+          #summary-growth-embed .ga-bc-upgrade-row > *{ grid-column:1 !important; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:nth-of-type(1){ grid-row:2; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-chart-card:nth-of-type(2){ grid-row:3; }
+          #summary-growth-embed .ga-bc-upgrade-head-r{ grid-row:4; }
+          #summary-growth-embed .ga-bc-upgrade-row > .ga-upgrade-chart-card{ grid-row:5; }
+        }
       </style>
       <div class="ga-header">
         <div class="ga-header-left">
@@ -10031,35 +10161,59 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
           <span class="ga-section-line"></span>
         </div>
         <div class="ga-chart-grid" style="margin-bottom:24px;">
-        <div class="ga-chart-card">
-          <div class="ga-chart-label" style="color:var(--text)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg> AREA — ACCOUNTS &amp; BANDWIDTH (ON-AIR)</div>
-          <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#ff7900"></i>New Accounts (On-Air)</span><span><i class="ga-legend-dot" style="background:#2f6fed"></i>Bandwidth Added (Gbps)</span></div>
+        <div class="ga-chart-card" id="ga-area-card-sc">
+          <div class="ga-chart-label" style="color:#ffffff"><span class="ga-label-icon neutral"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></span> YEARLY NEW ACCOUNTS &amp; BANDWIDTH ADDED (ON-AIR)</div>
+          <div class="ga-legend-row" style="color:#ffffff"><span><i class="ga-legend-dot" style="background:#ff7900"></i>New Accounts (On-Air)</span><span><i class="ga-legend-dot" style="background:#2159c9"></i>Bandwidth Added (Gbps)</span></div>
           <div id="ga-area-combo-chart-sc"></div>
         </div>
+        <style>
+          #ga-area-card-sc{ border-width:1.5px; border-color:rgba(130,150,180,0.32); box-shadow:0 2px 14px rgba(0,0,0,0.10); }
+          #ga-area-card-sc .ga-chart-label{ font-size:13.5px; letter-spacing:.4px; }
+          #ga-area-card-sc .ga-legend-row{ font-size:11.5px; font-weight:600; }
+          /* ga-yearly-card-sc (right) has a stat-box footer this card lacks, so the grid
+             stretches ga-area-card-sc taller than its own content needs, leaving a dead
+             block below the chart. Flex-center the chart body in the extra space instead. */
+          #ga-area-card-sc{ display:flex; flex-direction:column; }
+          #ga-area-card-sc > div:not(.ga-chart-label):not(.ga-legend-row){ flex:1; display:flex; align-items:center; }
+          #ga-area-card-sc > div:not(.ga-chart-label):not(.ga-legend-row) > svg{ width:100%; }
+        </style>
 
-        <div class="ga-chart-card">
-          <div class="ga-chart-label" style="color:var(--text)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg> NEW ACCOUNTS &amp; BANDWIDTH ADDED PER YEAR (TRIPLE PLAY + BUSINESS COMPLEX)</div>
-          <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#5b8def"></i>TP Accounts</span><span><i class="ga-legend-dot" style="background:#ff7900"></i>BC Accounts</span><span><i class="ga-legend-dot" style="background:#5b8def;opacity:.6"></i>TP Bandwidth (Gbps)</span><span><i class="ga-legend-dot" style="background:#ff7900;opacity:.6"></i>BC Bandwidth (Gbps)</span></div>
+        <div class="ga-chart-card" id="ga-yearly-card-sc">
+          <div class="ga-chart-label" style="color:#ffffff"><span class="ga-label-icon neutral"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></span> NEW ACCOUNTS &amp; BANDWIDTH ADDED PER YEAR (TRIPLE PLAY + BUSINESS COMPLEX)</div>
+          <div class="ga-legend-row" style="color:#ffffff"><span><i class="ga-legend-dot" style="background:#2159c9"></i>TP Accounts</span><span><i class="ga-legend-dot" style="background:#ff7900"></i>BC Accounts</span><span><i class="ga-legend-dot ga-legend-diamond" style="background:#2159c9"></i>TP Bandwidth (Gbps)</span><span><i class="ga-legend-dot ga-legend-diamond" style="background:#ff7900"></i>BC Bandwidth (Gbps)</span></div>
           <div id="ga-yearly-combo-chart-sc"></div>
           <div class="ga-chart-footer" id="ga-yearly-combo-footer-sc"></div>
         </div>
+        <style>
+          #ga-yearly-card-sc{ border-width:1.5px; border-color:rgba(130,150,180,0.32); box-shadow:0 2px 14px rgba(0,0,0,0.10); }
+          #ga-yearly-card-sc .ga-chart-label{ font-size:13.5px; letter-spacing:.4px; }
+          #ga-yearly-card-sc .ga-legend-row{ font-size:11.5px; font-weight:600; }
+          #ga-yearly-card-sc .ga-legend-diamond{ border-radius:2px; transform:rotate(45deg); width:7px; height:7px; }
+          #ga-yearly-combo-footer-sc{ display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+          #ga-yearly-combo-footer-sc .ga-stat-box{ flex:1 1 0; min-width:108px; border-radius:10px; padding:8px 12px; display:flex; flex-direction:column; gap:2px; }
+          #ga-yearly-combo-footer-sc .ga-stat-label{ font-size:9.5px; font-weight:800; letter-spacing:.4px; opacity:.9; }
+          #ga-yearly-combo-footer-sc .ga-stat-value{ font-size:16px; font-weight:800; }
+          #ga-yearly-combo-footer-sc .ga-stat-box.peak .ga-stat-value{ font-size:13px; }
+        </style>
         </div>
 
-        <div class="ga-chart-card" style="margin-bottom:24px;">
-          <div class="ga-chart-label" style="color:var(--text)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> BY AREA — ACCOUNTS &amp; BANDWIDTH (ON-AIR)</div>
-          <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#5b8def"></i>TP Accounts</span><span><i class="ga-legend-dot" style="background:#ff7900"></i>BC Accounts</span><span><i class="ga-legend-dot" style="background:#5b8def;opacity:.6"></i>TP Bandwidth (Gbps)</span><span><i class="ga-legend-dot" style="background:#ff7900;opacity:.6"></i>BC Bandwidth (Gbps)</span></div>
-          <div id="ga-geo-area-chart-sc"></div>
-          <div class="ga-chart-footer" id="ga-geo-area-footer-sc"></div>
-        </div>
 
-        <div class="ga-section-head" style="justify-content:center;margin-top:0;">
-          <span class="ga-section-line"></span>
-          <span style="font-size:16px;line-height:1;" aria-hidden="true">🏘️</span><span class="ga-section-title">Orange Triple Play Compounds</span>
-          <span class="ga-section-line"></span>
-        </div>
-        <div class="ga-chart-grid">
-          <div class="ga-chart-card">
-            <div class="ga-chart-label orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg> ACCOUNTS GROWTH YOY</div>
+        <div class="ga-chart-grid" style="grid-template-columns:1fr 1fr 1fr;">
+          <div class="ga-chart-card" id="ga-geoarea-card-sc">
+            <div class="ga-chart-label" style="color:var(--text)"><span class="ga-label-icon neutral"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span> BY AREA — ACCOUNTS &amp; BANDWIDTH (ON-AIR)</div>
+            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2159c9"></i>TP Accounts</span><span><i class="ga-legend-dot" style="background:#ff7900"></i>BC Accounts</span><span><i class="ga-legend-dot" style="background:#2159c9;opacity:.7"></i>TP Bandwidth (Gbps)</span><span><i class="ga-legend-dot" style="background:#ff7900;opacity:.6"></i>BC Bandwidth (Gbps)</span></div>
+            <div id="ga-geo-area-chart-sc"></div>
+            <div class="ga-chart-footer" id="ga-geo-area-footer-sc"></div>
+          </div>
+          <style>
+            #ga-geo-area-footer-sc{ display:flex; gap:10px; flex-wrap:wrap; margin-top:4px; }
+            #ga-geo-area-footer-sc .ga-stat-box{ flex:1 1 0; min-width:108px; border-radius:10px; padding:8px 12px; display:flex; flex-direction:column; gap:2px; }
+            #ga-geo-area-footer-sc .ga-stat-label{ font-size:9.5px; font-weight:800; letter-spacing:.4px; opacity:.9; }
+            #ga-geo-area-footer-sc .ga-stat-value{ font-size:16px; font-weight:800; }
+            #ga-geo-area-footer-sc .ga-stat-box.peak .ga-stat-value{ font-size:13px; }
+          </style>
+          <div class="ga-chart-card" id="ga-tpacc-card-sc">
+            <div class="ga-chart-label orange"><span class="ga-label-icon orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg></span> ACCOUNTS GROWTH YOY</div>
             <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#ff7900"></i>#Acc Account</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#Account</span></div>
             <div id="ga-tp-acc-chart-sc"></div>
             <div class="ga-chart-footer">
@@ -10067,9 +10221,9 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
               <span class="ga-cagr-val orange">+28.7%</span>
             </div>
           </div>
-          <div class="ga-chart-card">
-            <div class="ga-chart-label blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg> BANDWIDTH PROVIDED YOY (GBPS)</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2f6fed"></i>#Acc BW (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#BW (Gbps)</span></div>
+          <div class="ga-chart-card" id="ga-tpbw-card-sc">
+            <div class="ga-chart-label blue"><span class="ga-label-icon blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg></span> BANDWIDTH PROVIDED YOY (GBPS)</div>
+            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2159c9"></i>#Acc BW (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#BW (Gbps)</span></div>
             <div id="ga-tp-bw-chart-sc"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg> CAGR (Bandwidth)</span>
@@ -10077,16 +10231,54 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
             </div>
           </div>
         </div>
+        <style>
+          @media (max-width:1100px){ #summary-growth-embed .ga-chart-grid[style*="1fr 1fr 1fr"]{ grid-template-columns:1fr 1fr; } }
+          @media (max-width:700px){ #summary-growth-embed .ga-chart-grid[style*="1fr 1fr 1fr"]{ grid-template-columns:1fr; } }
+          /* Enhanced chart-card labels: icon badge + bolder type + accent underline, scoped to the four Accounts & Bandwidth Growth charts */
+          .ga-label-icon{ display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:7px; flex:0 0 auto; }
+          .ga-label-icon.neutral{ background:rgba(150,160,180,0.16); color:var(--text); }
+          .ga-label-icon.orange{ background:rgba(255,121,0,0.14); color:#ff7900; }
+          .ga-label-icon.blue{ background:rgba(33,89,201,0.14); color:#2159c9; }
+          #ga-yearly-card-sc .ga-chart-label,
+          #ga-geoarea-card-sc .ga-chart-label,
+          #ga-tpacc-card-sc .ga-chart-label,
+          #ga-tpbw-card-sc .ga-chart-label{
+            font-size:13.5px; font-weight:800; letter-spacing:.5px;
+            padding-bottom:8px; margin-bottom:10px;
+            border-bottom:1px solid rgba(140,155,180,0.18);
+          }
+          #ga-geoarea-card-sc .ga-chart-label{ border-bottom-color:rgba(150,160,180,0.22); }
+          #ga-tpacc-card-sc .ga-chart-label{ border-bottom-color:rgba(255,121,0,0.28); }
+          #ga-tpbw-card-sc .ga-chart-label{ border-bottom-color:rgba(33,89,201,0.28); }
+          /* Grid stretches all 3 cards in this row to match the tallest (BY AREA,
+             whose legend row wraps). Without this, the shorter ACCOUNTS GROWTH YOY /
+             BANDWIDTH PROVIDED YOY charts stay pinned to the top with dead space
+             below before the CAGR footer. Same fix already used for the BC-row
+             cards further down: flex-center the chart body, pin footer to bottom. */
+          #ga-tpacc-card-sc, #ga-tpbw-card-sc{ display:flex; flex-direction:column; }
+          #ga-tpacc-card-sc > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer),
+          #ga-tpbw-card-sc > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer){
+            flex:1; display:flex; align-items:center;
+          }
+          #ga-tpacc-card-sc > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer) > svg,
+          #ga-tpbw-card-sc > div:not(.ga-chart-label):not(.ga-legend-row):not(.ga-chart-footer) > svg{ width:100%; }
+          #ga-tpacc-card-sc .ga-chart-footer, #ga-tpbw-card-sc .ga-chart-footer{ margin-top:auto; }
+        </style>
 
 
-        <div class="ga-section-head" style="justify-content:center;">
-          <span class="ga-section-line"></span>
-          <span style="font-size:16px;line-height:1;" aria-hidden="true">🏢</span><span class="ga-section-title">Orange Business Complexes</span><span class="ga-section-line"></span>
-        </div>
-        <div class="ga-chart-grid">
+        <div class="ga-bc-upgrade-row">
+          <div class="ga-section-head ga-bc-upgrade-head-l" style="justify-content:center;">
+            <span class="ga-section-line"></span>
+            <span style="font-size:16px;line-height:1;" aria-hidden="true">🏢</span><span class="ga-section-title">Orange Business Complexes</span><span class="ga-section-line"></span>
+          </div>
+          <div class="ga-section-head ga-bc-upgrade-head-r" style="justify-content:center;">
+            <span class="ga-section-line"></span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg><span class="ga-section-title">Capacity Upgrades</span><span class="ga-section-line"></span>
+          </div>
+
           <div class="ga-chart-card">
             <div class="ga-chart-label orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ACCOUNTS GROWTH YOY</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#ff7900"></i>Count of Site Code</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>Count of Accounts</span></div>
+            <div class="ga-legend-row"><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#ff7900"></i>Count of Site Code</span><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#c7c9cf"></i>Count of Accounts</span></div>
             <div id="ga-bc-acc-chart-sc"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/></svg> CAGR (Accounts)</span>
@@ -10095,34 +10287,26 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
           </div>
           <div class="ga-chart-card">
             <div class="ga-chart-label blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg> BANDWIDTH PROVIDED YOY (GBPS)</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2f6fed"></i>Acc Bandwidth (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#Bandwidth (Gbps)</span></div>
+            <div class="ga-legend-row"><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#2159c9"></i>Acc Bandwidth (Gbps)</span><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#c7c9cf"></i>#Bandwidth (Gbps)</span></div>
             <div id="ga-bc-bw-chart-sc"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg> CAGR (Bandwidth)</span>
               <span class="ga-cagr-val blue">+58.1%</span>
             </div>
           </div>
-        </div>
-
-        <div class="ga-section-head" style="justify-content:center;">
-          <span class="ga-section-line"></span>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10"/></svg><span class="ga-section-title">Capacity Upgrades</span><span class="ga-section-line"></span>
-        </div>
-        <div class="ga-upgrade-grid">
           <div class="ga-chart-card ga-upgrade-chart-card">
             <div class="ga-chart-label">Before vs After — Gbps Comparison</div>
-            <div class="ga-chart-sub">Capacity added per site following the latest upgrade cycle</div>
             <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>Before (Gbps)</span><span><i class="ga-legend-dot" style="background:#ff7900"></i>After (Gbps)</span></div>
             <div class="ga-chart-card-body"><div id="ga-upgrade-chart-sc" style="flex:1;"></div></div>
           </div>
-          <div class="ga-summary-card" id="ga-summary-card-sc"></div>
         </div>
 
-        <div class="ga-section-head" style="margin-top:24px;justify-content:center;">
+        <div class="ga-section-head ga-site-detail-head" style="margin-top:24px;justify-content:center;">
           <span class="ga-section-line" style="opacity:.15;"></span>
           <span style="font-size:14px;line-height:1;" aria-hidden="true">🔍</span><span class="ga-section-title" style="font-size:14px; color:var(--text);">Site-Level Upgrade Detail</span>
           <span class="ga-section-line" style="opacity:.15;"></span>
         </div>
+        <div class="ga-header-kpis" id="ga-site-kpis-sc" style="padding:0 0 14px;"></div>
         <div class="ga-site-grid" id="ga-site-grid-sc"></div>
 
       </div>
@@ -10391,10 +10575,10 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
           aspect-ratio: 1 / 1;
           width: 100%;
           padding: 0;
-          background: #ffffff;
-          border: 1px solid rgba(0,0,0,0.06);
+          background: var(--card);
+          border: 1px solid var(--border);
           border-radius: 14px;
-          box-shadow: 0 4px 14px rgba(0,0,0,0.10);
+          box-shadow: var(--shadow-card);
           transition: transform .25s cubic-bezier(.22,.68,0,1.01), box-shadow .25s cubic-bezier(.22,.68,0,1.01);
         }
         #sum-dev-grid-sc .sum-dev-card:hover {
@@ -11006,7 +11190,9 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         .ga-header-kpis { display:flex; gap:14px; flex-wrap:wrap; padding:10px 36px 8px; }
         .ga-kpi { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:12px; flex:1; min-width:170px; box-shadow:0 1px 6px rgba(0,0,0,0.05); }
         .ga-kpi-body { min-width:0; flex:1; }
-        .ga-kpi-icon { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+        .ga-kpi-icon { width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+        .ga-kpi-icon svg { width:26px !important; height:26px !important; }
+        .ga-kpi-icon { font-size:26px; }
         .ga-kpi-lbl { font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .ga-kpi-val { font-size:22px; font-weight:800; color:var(--text); font-family:var(--font-head); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
         .ga-kpi-val .unit { font-size:14px; font-weight:600; }
@@ -11023,17 +11209,17 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         .ga-chart-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px 14px; box-shadow:0 1px 6px rgba(0,0,0,0.05); }
         .ga-chart-label { display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:800; letter-spacing:.3px; margin-bottom:6px; }
         .ga-chart-label.orange { color:#ff7900; }
-        .ga-chart-label.blue { color:#5b8fe0; }
+        .ga-chart-label.blue { color:#2159c9; }
         .ga-legend-row { display:flex; gap:16px; font-size:10.5px; color:var(--muted); margin-bottom:6px; }
         .ga-legend-row span { display:inline-flex; align-items:center; gap:5px; }
         .ga-legend-dot { width:8px; height:8px; border-radius:2px; display:inline-block; }
         .ga-chart-footer { display:flex; align-items:center; justify-content:space-between; margin-top:8px; }
         .ga-cagr-pill { font-size:10.5px; font-weight:700; padding:5px 12px; border-radius:6px; display:inline-flex; align-items:center; gap:5px; }
         .ga-cagr-pill.orange { background:var(--orange-dim); color:#ff7900; }
-        .ga-cagr-pill.blue { background:rgba(91,143,224,0.16); color:#5b8fe0; }
+        .ga-cagr-pill.blue { background:rgba(33,89,201,0.16); color:#2159c9; }
         .ga-cagr-val { font-size:14px; font-weight:800; }
         .ga-cagr-val.orange { color:#ff7900; }
-        .ga-cagr-val.blue { color:#5b8fe0; }
+        .ga-cagr-val.blue { color:#2159c9; }
 
         .ga-upgrade-grid { display:grid; grid-template-columns:1.6fr 1fr; gap:18px; }
         @media (max-width:900px) { .ga-upgrade-grid { grid-template-columns:1fr; } }
@@ -11263,7 +11449,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
           </div>
           <div class="ga-chart-card">
             <div class="ga-chart-label blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg> BANDWIDTH PROVIDED YOY (GBPS)</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2f6fed"></i>#Acc BW (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#BW (Gbps)</span></div>
+            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2159c9"></i>#Acc BW (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#BW (Gbps)</span></div>
             <div id="ga-tp-bw-chart"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg> CAGR (Bandwidth)</span>
@@ -11280,7 +11466,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
         <div class="ga-chart-grid">
           <div class="ga-chart-card">
             <div class="ga-chart-label orange"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> ACCOUNTS GROWTH YOY</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#ff7900"></i>Count of Site Code</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>Count of Accounts</span></div>
+            <div class="ga-legend-row"><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#ff7900"></i>Count of Site Code</span><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#c7c9cf"></i>Count of Accounts</span></div>
             <div id="ga-bc-acc-chart"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/></svg> CAGR (Accounts)</span>
@@ -11289,7 +11475,7 @@ window.ACCOUNT_BW_MAP = {"Emaar Marassi": 15000.0, "New Giza": 13000.0, "EMAAR M
           </div>
           <div class="ga-chart-card">
             <div class="ga-chart-label blue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg> BANDWIDTH PROVIDED YOY (GBPS)</div>
-            <div class="ga-legend-row"><span><i class="ga-legend-dot" style="background:#2f6fed"></i>Acc Bandwidth (Gbps)</span><span><i class="ga-legend-dot" style="background:#c7c9cf"></i>#Bandwidth (Gbps)</span></div>
+            <div class="ga-legend-row"><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#2159c9"></i>Acc Bandwidth (Gbps)</span><span style="color:#FFFFFF"><i class="ga-legend-dot" style="background:#c7c9cf"></i>#Bandwidth (Gbps)</span></div>
             <div id="ga-bc-bw-chart"></div>
             <div class="ga-chart-footer">
               <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/></svg> CAGR (Bandwidth)</span>
@@ -18025,7 +18211,7 @@ html body.light #sum-ksp-overlay.open.open { background: rgba(0,0,0,0.35) !impor
 </script>
 
 <style id="no-shadows-override">
-html body *, html body *::before, html body *::after {
+html body *:not(:hover), html body *:not(:hover)::before, html body *:not(:hover)::after {
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
 }
@@ -18052,7 +18238,7 @@ html body .global-filter-bar.global-filter-bar { background: #051220 !important;
 html body.light .global-filter-bar.global-filter-bar { background: #ffffff !important; }
 html body .chart-tooltip.chart-tooltip { background: #0e2135 !important; }
 html body.light .chart-tooltip.chart-tooltip { background: #ffffff !important; }
-html body div#welcome-overlay { background: #030a15 !important; }
+html body div#welcome-overlay { background: #0b0f1c !important; }
 html body div#imap-legend, html body div#imap-statsbar { background: #071420 !important; }
 html body.light div#imap-legend, html body.light div#imap-statsbar { background: rgba(255,255,255,0.97) !important; }
 </style>
@@ -20212,15 +20398,19 @@ function gaSmoothPath(pts) {
 
 
 // Combo chart: gray bars (per-year) + colored line+dots interpolated to the labeled cumulative final value
-function gaBuildComboChart(containerId, dataset, lineColor, divisor, barColor) {
+function gaBuildComboChart(containerId, dataset, lineColor, divisor, barColor, heightOverride, axisColor) {
   const wrap = document.getElementById(containerId);
   if (!wrap) return;
   divisor = divisor || 1;
   barColor = barColor || '#c7c9cf';
+  axisColor = axisColor || '#999';
   const years = dataset.years;
   const bars = divisor === 1 ? dataset.bars : dataset.bars.map(b => Math.round((b/divisor)*100)/100);
   const finalVal = divisor === 1 ? dataset.cum_final : Math.round((dataset.cum_final/divisor)*100)/100;
-  const W = wrap.clientWidth || 460, H = 210;
+  // heightOverride lets a caller match this chart's intrinsic aspect ratio to a taller
+  // sibling in the same grid row (e.g. the BY AREA chart at H=240), so the SVG itself
+  // fills the card instead of rendering at a fixed 210 and leaving dead space around it.
+  const W = wrap.clientWidth || 460, H = heightOverride || 210;
   const PAD = { top:36, right:12, bottom:22, left:32 };
   const cW = W-PAD.left-PAD.right, cH = H-PAD.top-PAD.bottom;
   const n = years.length, groupW = cW/n, barW = Math.min(groupW*0.55, 20), barBase = PAD.top+cH;
@@ -20241,6 +20431,12 @@ function gaBuildComboChart(containerId, dataset, lineColor, divisor, barColor) {
   }
   const linePts = [];
   let barLabelsSvg = '', axisLabelsSvg = '';
+  // Year labels overlap/merge into an unreadable smear once groupW gets narrow
+  // (compact/multi-column layouts). Thin them out to every Nth year and shrink
+  // the font a touch so labels always stay legible, always keeping the last year.
+  const axisFontPx = groupW < 24 ? 6.5 : 7.5;
+  const minLabelPx = axisFontPx * 2.55; // ~4-char "20XX" label width estimate
+  const labelStep = Math.max(1, Math.ceil(minLabelPx / groupW));
   years.forEach((y,i) => {
     const cx = PAD.left + i*groupW + groupW/2;
     const barVal = bars[i];
@@ -20250,7 +20446,10 @@ function gaBuildComboChart(containerId, dataset, lineColor, divisor, barColor) {
     if (barVal>0) barLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barTop-6).toFixed(1)}" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3" stroke-linejoin="round">${barVal}</text>`;
     const ly = barBase - (cumScaled[i]/maxLine)*cH*0.78;
     linePts.push({x:cx,y:ly,val:cumScaled[i]});
-    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#999" font-size="7.5">${y}</text>`;
+    const isLast = i === years.length-1;
+    if (i % labelStep === 0 || isLast) {
+      axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="${axisColor}" font-size="${axisFontPx}">${y}</text>`;
+    }
   });
   if (linePts.length>1) {
     const pathD = linePts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
@@ -20284,10 +20483,10 @@ function gaBuildYearlyComboChart(containerId) {
   const bcBw  = years.map((y,i) => Math.round((GA_BC_BW.bars[i]||0)*10)/10);
   const bw    = years.map((y,i) => Math.round((tpBw[i]+bcBw[i])*10)/10);
   const gid = containerId.replace(/[^a-zA-Z0-9_-]/g,'');
-  const COL_TP = '#5b8def', COL_BC = '#ff7900';
+  const COL_TP = '#2159c9', COL_BC = '#ff7900';
 
-  const W = wrap.clientWidth || 900, H = 240;
-  const PAD = { top:36, right:36, bottom:26, left:34 };
+  const W = wrap.clientWidth || 900, H = 252;
+  const PAD = { top:38, right:52, bottom:30, left:42 };
   const cW = W-PAD.left-PAD.right, cH = H-PAD.top-PAD.bottom;
   const n = years.length, groupW = cW/n, barW = Math.min(groupW*0.5, 26), barBase = PAD.top+cH;
   const maxAcc = Math.max(...acc, 1);
@@ -20298,36 +20497,62 @@ function gaBuildYearlyComboChart(containerId) {
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;font-family:IBM Plex Mono, monospace">`;
   svg += `<defs>
     <linearGradient id="ga-ybar-tp-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8bb0f5"/>
+      <stop offset="0%" stop-color="#8fb6f2"/>
+      <stop offset="55%" stop-color="#3f76dc"/>
       <stop offset="100%" stop-color="${COL_TP}"/>
     </linearGradient>
     <linearGradient id="ga-ybar-bc-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffa640"/>
+      <stop offset="0%" stop-color="#ffc27a"/>
+      <stop offset="55%" stop-color="#ff9433"/>
       <stop offset="100%" stop-color="${COL_BC}"/>
     </linearGradient>
+    <linearGradient id="ga-yarea-tp-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${COL_TP}" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="${COL_TP}" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="ga-yarea-bc-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${COL_BC}" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="${COL_BC}" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="ga-yglow-tp-${gid}"><stop offset="0%" stop-color="${COL_TP}" stop-opacity="0.55"/><stop offset="100%" stop-color="${COL_TP}" stop-opacity="0"/></radialGradient>
+    <radialGradient id="ga-yglow-bc-${gid}"><stop offset="0%" stop-color="${COL_BC}" stop-opacity="0.55"/><stop offset="100%" stop-color="${COL_BC}" stop-opacity="0"/></radialGradient>
+    <filter id="ga-ybar-shadow-${gid}" x="-40%" y="-20%" width="180%" height="150%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.2" flood-color="#1a2540" flood-opacity="0.22"/>
+    </filter>
     <filter id="ga-yline-shadow-tp-${gid}" x="-30%" y="-60%" width="160%" height="220%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.6" flood-color="${COL_TP}" flood-opacity="0.35"/>
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.6" flood-color="${COL_TP}" flood-opacity="0.4"/>
     </filter>
     <filter id="ga-yline-shadow-bc-${gid}" x="-30%" y="-60%" width="160%" height="220%">
-      <feDropShadow dx="0" dy="1.5" stdDeviation="1.6" flood-color="${COL_BC}" flood-opacity="0.35"/>
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.6" flood-color="${COL_BC}" flood-opacity="0.4"/>
     </filter>
-  </defs>`;
+  </defs>
+  <style>
+    #${gid} .ga-ybar{transform-box:fill-box;transform-origin:bottom;animation:gaYBarGrow-${gid} .8s cubic-bezier(.22,1.4,.4,1) both;}
+    #${gid} .ga-yline{animation:gaYFade-${gid} 1s ease-out .25s both;}
+    #${gid} .ga-yarea{animation:gaYFade-${gid} 1.1s ease-out .35s both;}
+    #${gid} .ga-ypt{animation:gaYFade-${gid} .6s ease-out both;}
+    #${gid} .ga-ybar:hover{filter:brightness(1.1) url(#ga-ybar-shadow-${gid});}
+    @keyframes gaYBarGrow-${gid}{from{transform:scaleY(0);opacity:.5;}to{transform:scaleY(1);opacity:1;}}
+    @keyframes gaYFade-${gid}{from{opacity:0;}to{opacity:1;}}
+  </style>`;
+  // Framed plot box — gives the chart a defined "panel" instead of floating bars/lines
+  svg += `<rect x="${(PAD.left-10).toFixed(1)}" y="${(PAD.top-14).toFixed(1)}" width="${(cW+20).toFixed(1)}" height="${(cH+20).toFixed(1)}" rx="10" fill="rgba(120,140,170,0.045)" stroke="rgba(130,145,170,0.22)" stroke-width="1.1"/>`;
+  svg += `<text x="${(PAD.left-10).toFixed(1)}" y="${(PAD.top-20).toFixed(1)}" text-anchor="start" fill="var(--text)" font-size="9.5" font-weight="800" letter-spacing="0.4" opacity="0.85">ACCOUNTS</text>`;
+  svg += `<text x="${(W-PAD.right+10).toFixed(1)}" y="${(PAD.top-20).toFixed(1)}" text-anchor="end" fill="var(--text)" font-size="9.5" font-weight="800" letter-spacing="0.4" opacity="0.85">BANDWIDTH (GBPS)</text>`;
   for (let g=0; g<=3; g++) {
     const y = barBase-(g/3)*cH;
-    svg += `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="rgba(120,120,120,0.09)" stroke-width="1" stroke-dasharray="${g===0?'0':'3,4'}"/>`;
-    svg += `<text x="${PAD.left-6}" y="${y+3}" text-anchor="end" fill="#aaa" font-size="8">${Math.round((g/3)*niceMaxAcc)}</text>`;
+    svg += `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="rgba(120,120,120,0.12)" stroke-width="1" stroke-dasharray="${g===0?'0':'3,4'}"/>`;
+    svg += `<text x="${PAD.left-9}" y="${y+3.5}" text-anchor="end" fill="#a7afbd" font-size="9.5" font-weight="600">${Math.round((g/3)*niceMaxAcc)}</text>`;
   }
   for (let g=0; g<=3; g++) {
     const y = barBase-(g/3)*cH;
-    svg += `<text x="${W-PAD.right+6}" y="${y+3}" text-anchor="start" fill="#9aa6b8" font-size="8">${Math.round((g/3)*niceMaxBw)}</text>`;
+    svg += `<text x="${W-PAD.right+9}" y="${y+3.5}" text-anchor="start" fill="#a9b2c4" font-size="9.5" font-weight="600">${Math.round((g/3)*niceMaxBw)}</text>`;
   }
-  svg += `<text x="${PAD.left}" y="${(PAD.top-18).toFixed(1)}" text-anchor="start" fill="#8a8f98" font-size="8" font-weight="700" letter-spacing="0.5">ACCOUNTS (TP + BC stacked)</text>`;
-  svg += `<text x="${W-PAD.right}" y="${(PAD.top-18).toFixed(1)}" text-anchor="end" fill="#8a8f98" font-size="8" font-weight="700" letter-spacing="0.5">BANDWIDTH (GBPS)</text>`;
 
   const tpLinePts = [], bcLinePts = [];
   const barLabelYs = [];
   let barLabelsSvg = '', axisLabelsSvg = '', lineLabelsSvg = '';
-  const MIN_GAP = 13;
+  const MIN_GAP = 15;
   years.forEach((y,i) => {
     const cx = PAD.left + i*groupW + groupW/2;
     const tpVal = tpAcc[i], bcVal = bcAcc[i], totalVal = acc[i];
@@ -20335,28 +20560,39 @@ function gaBuildYearlyComboChart(containerId) {
     const bcH = Math.max((bcVal/niceMaxAcc)*cH, bcVal>0?2:0);
     const tpTop = barBase - tpH;
     const bcTop = tpTop - bcH;
-    if (tpVal>0) svg += `<rect x="${(cx-barW/2).toFixed(1)}" y="${tpTop.toFixed(1)}" width="${barW}" height="${tpH.toFixed(1)}" rx="2" fill="url(#ga-ybar-tp-grad-${gid})"><title>${y}: ${tpVal} new Triple Play accounts (On-Air)</title></rect>`;
-    if (bcVal>0) svg += `<rect x="${(cx-barW/2).toFixed(1)}" y="${bcTop.toFixed(1)}" width="${barW}" height="${bcH.toFixed(1)}" rx="2" fill="url(#ga-ybar-bc-grad-${gid})"><title>${y}: ${bcVal} new Business Complex accounts (On-Air)</title></rect>`;
+    const barDelay = (i*45).toFixed(0);
+    if (tpVal>0) {
+      const tpRadius = bcVal>0 ? 1 : Math.min(4, tpH/2);
+      svg += `<rect class="ga-ybar" style="animation-delay:${barDelay}ms" x="${(cx-barW/2).toFixed(1)}" y="${tpTop.toFixed(1)}" width="${barW}" height="${tpH.toFixed(1)}" rx="${tpRadius}" fill="url(#ga-ybar-tp-grad-${gid})" filter="url(#ga-ybar-shadow-${gid})"><title>${y}: ${tpVal} new Triple Play accounts (On-Air)</title></rect>`;
+    }
+    if (bcVal>0) {
+      svg += `<rect class="ga-ybar" style="animation-delay:${(+barDelay+30)}ms" x="${(cx-barW/2).toFixed(1)}" y="${bcTop.toFixed(1)}" width="${barW}" height="${bcH.toFixed(1)}" rx="${Math.min(4, bcH/2)}" fill="url(#ga-ybar-bc-grad-${gid})" filter="url(#ga-ybar-shadow-${gid})"><title>${y}: ${bcVal} new Business Complex accounts (On-Air)</title></rect>`;
+    }
     const barLabelY = bcTop-6;
     barLabelYs.push(totalVal>0 ? barLabelY : null);
-    if (totalVal>0) barLabelsSvg += `<text x="${cx.toFixed(1)}" y="${barLabelY.toFixed(1)}" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${totalVal}</text>`;
+    if (totalVal>0) barLabelsSvg += `<text x="${cx.toFixed(1)}" y="${barLabelY.toFixed(1)}" text-anchor="middle" fill="var(--text)" font-size="12" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${totalVal}</text>`;
     const tpBwVal = tpBw[i], bcBwVal = bcBw[i];
     const tpLy = barBase - (tpBwVal/niceMaxBw)*cH;
     const bcLy = barBase - (bcBwVal/niceMaxBw)*cH;
     tpLinePts.push({x:cx,y:tpLy,val:tpBwVal,year:y});
     bcLinePts.push({x:cx,y:bcLy,val:bcBwVal,year:y});
-    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#999" font-size="7.5">${y}</text>`;
+    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+16).toFixed(1)}" text-anchor="middle" fill="#ffffff" font-size="9.5" font-weight="700">${y}</text>`;
   });
   if (tpLinePts.length>1) {
-    svg += `<path d="${gaSmoothPath(tpLinePts)}" fill="none" stroke="${COL_TP}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-yline-shadow-tp-${gid})"/>`;
+    const tpAreaD = `${gaSmoothPath(tpLinePts)} L${tpLinePts[tpLinePts.length-1].x.toFixed(1)},${barBase.toFixed(1)} L${tpLinePts[0].x.toFixed(1)},${barBase.toFixed(1)} Z`;
+    svg += `<path class="ga-yarea" d="${tpAreaD}" fill="url(#ga-yarea-tp-grad-${gid})" stroke="none"/>`;
+    svg += `<path class="ga-yline" d="${gaSmoothPath(tpLinePts)}" fill="none" stroke="${COL_TP}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-yline-shadow-tp-${gid})"/>`;
   }
   if (bcLinePts.length>1) {
-    svg += `<path d="${gaSmoothPath(bcLinePts)}" fill="none" stroke="${COL_BC}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-yline-shadow-bc-${gid})"/>`;
+    const bcAreaD = `${gaSmoothPath(bcLinePts)} L${bcLinePts[bcLinePts.length-1].x.toFixed(1)},${barBase.toFixed(1)} L${bcLinePts[0].x.toFixed(1)},${barBase.toFixed(1)} Z`;
+    svg += `<path class="ga-yarea" d="${bcAreaD}" fill="url(#ga-yarea-bc-grad-${gid})" stroke="none"/>`;
+    svg += `<path class="ga-yline" d="${gaSmoothPath(bcLinePts)}" fill="none" stroke="${COL_BC}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-yline-shadow-bc-${gid})"/>`;
   }
   const tpLabelYs = [];
   tpLinePts.forEach((p,i) => {
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_TP}" stroke-width="1.4"/>`;
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_TP}"><title>${p.year}: ${p.val} Gbps TP added (On-Air)</title></circle>`;
+    svg += `<circle class="ga-ypt" style="animation-delay:${(i*45+200)}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="url(#ga-yglow-tp-${gid})"/>`;
+    svg += `<path class="ga-ypt" style="animation-delay:${(i*45+200)}ms" d="M${p.x.toFixed(1)},${(p.y-4.3).toFixed(1)} L${(p.x+4.3).toFixed(1)},${p.y.toFixed(1)} L${p.x.toFixed(1)},${(p.y+4.3).toFixed(1)} L${(p.x-4.3).toFixed(1)},${p.y.toFixed(1)} Z" fill="var(--card)" stroke="${COL_TP}" stroke-width="1.5" stroke-linejoin="round"/>`;
+    svg += `<circle class="ga-ypt" style="animation-delay:${(i*45+200)}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="1.8" fill="${COL_TP}"><title>${p.year}: ${p.val} Gbps TP added (On-Air)</title></circle>`;
     if (p.val>0) {
       // Default: label above the point. If that would collide with the total-accounts
       // bar label directly above it (common in peak years), drop the label below the
@@ -20365,14 +20601,15 @@ function gaBuildYearlyComboChart(containerId) {
       const barY = barLabelYs[i];
       if (barY!==null && Math.abs(ly-barY) < MIN_GAP) ly = p.y+14;
       tpLabelYs.push(ly);
-      lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_TP}" font-size="8.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
+      lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_TP}" font-size="9.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
     } else {
       tpLabelYs.push(null);
     }
   });
   bcLinePts.forEach((p,i) => {
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_BC}" stroke-width="1.4"/>`;
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_BC}"><title>${p.year}: ${p.val} Gbps BC added (On-Air)</title></circle>`;
+    svg += `<circle class="ga-ypt" style="animation-delay:${(i*45+220)}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="url(#ga-yglow-bc-${gid})"/>`;
+    svg += `<path class="ga-ypt" style="animation-delay:${(i*45+220)}ms" d="M${p.x.toFixed(1)},${(p.y-4.3).toFixed(1)} L${(p.x+4.3).toFixed(1)},${p.y.toFixed(1)} L${p.x.toFixed(1)},${(p.y+4.3).toFixed(1)} L${(p.x-4.3).toFixed(1)},${p.y.toFixed(1)} Z" fill="var(--card)" stroke="${COL_BC}" stroke-width="1.5" stroke-linejoin="round"/>`;
+    svg += `<circle class="ga-ypt" style="animation-delay:${(i*45+220)}ms" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="1.8" fill="${COL_BC}"><title>${p.year}: ${p.val} Gbps BC added (On-Air)</title></circle>`;
     if (p.val>0) {
       // Default: label below the point. Near the chart floor (BC bandwidth is
       // usually a small slice of the total) that default lands right on top of
@@ -20388,7 +20625,7 @@ function gaBuildYearlyComboChart(containerId) {
       if (tpLabelY!==null && Math.abs(ly-tpLabelY) < MIN_GAP) ly = ly<=tpLabelY ? tpLabelY-MIN_GAP : tpLabelY+MIN_GAP;
       // Final safety net: never let it drift back down into the axis row.
       if (ly > barBase-4) ly = barBase-4;
-      lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_BC}" font-size="8.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
+      lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_BC}" font-size="9.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
     }
   });
   svg += barLabelsSvg + axisLabelsSvg + lineLabelsSvg;
@@ -20399,14 +20636,24 @@ function gaBuildYearlyComboChart(containerId) {
   if (footer) {
     const totalBw  = Math.round(((GA_TP_BW.cum_final||0) + (GA_BC_BW.cum_final||0))*10)/10;
     const peakIdx = acc.indexOf(Math.max(...acc));
+    const statBoxStyle = (hex) => `border:1px solid ${hex}55;background:${hex}17;color:${hex}`;
     footer.innerHTML = `
-      <span class="ga-cagr-pill" style="color:${COL_TP};border-color:${COL_TP}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12l2 2 4-4"/></svg> TP Accounts</span>
-      <span class="ga-cagr-val" style="color:${COL_TP}">${GA_TP_ACC.cum_final||0}</span>
-      <span class="ga-cagr-pill orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12l2 2 4-4"/></svg> BC Accounts</span>
-      <span class="ga-cagr-val orange">${GA_BC_ACC.cum_final||0}</span>
-      <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><circle cx="12" cy="20" r="1"/></svg> Total Bandwidth</span>
-      <span class="ga-cagr-val blue">${totalBw} Gbps</span>
-      <span style="font-size:10.5px;color:#8a8f9c;">Peak year: <b style="color:var(--text)">${years[peakIdx]}</b> (${acc[peakIdx]} accounts)</span>`;
+      <div class="ga-stat-box" style="${statBoxStyle(COL_TP)}">
+        <span class="ga-stat-label">TP ACCOUNTS</span>
+        <span class="ga-stat-value">${GA_TP_ACC.cum_final||0}</span>
+      </div>
+      <div class="ga-stat-box" style="${statBoxStyle(COL_BC)}">
+        <span class="ga-stat-label">BC ACCOUNTS</span>
+        <span class="ga-stat-value">${GA_BC_ACC.cum_final||0}</span>
+      </div>
+      <div class="ga-stat-box" style="${statBoxStyle(COL_TP)}">
+        <span class="ga-stat-label">TOTAL BANDWIDTH</span>
+        <span class="ga-stat-value">${totalBw} Gbps</span>
+      </div>
+      <div class="ga-stat-box peak" style="border:1px solid rgba(154,164,184,.4);background:rgba(154,164,184,.09);color:var(--text)">
+        <span class="ga-stat-label" style="opacity:.65">PEAK YEAR</span>
+        <span class="ga-stat-value">${years[peakIdx]} <span style="font-size:10.5px;font-weight:600;opacity:.7">(${acc[peakIdx]} accounts)</span></span>
+      </div>`;
   }
 }
 
@@ -20439,8 +20686,8 @@ function gaBuildAreaComboChart(containerId) {
       <stop offset="100%" stop-color="#ff7900" stop-opacity="0.02"/>
     </linearGradient>
     <linearGradient id="ga-area-bw-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2f6fed" stop-opacity="0.38"/>
-      <stop offset="100%" stop-color="#2f6fed" stop-opacity="0.02"/>
+      <stop offset="0%" stop-color="#2159c9" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#2159c9" stop-opacity="0.02"/>
     </linearGradient>
   </defs>`;
 
@@ -20448,7 +20695,7 @@ function gaBuildAreaComboChart(containerId) {
     const y = barBase-(g/3)*cH;
     svg += `<line x1="${PAD.left}" y1="${y.toFixed(1)}" x2="${W-PAD.right}" y2="${y.toFixed(1)}" stroke="rgba(120,120,120,0.10)" stroke-width="1"/>`;
     svg += `<text x="${PAD.left-6}" y="${y+3}" text-anchor="end" fill="#aaa" font-size="8">${Math.round((g/3)*niceMaxAcc)}</text>`;
-    svg += `<text x="${W-PAD.right+6}" y="${y+3}" text-anchor="start" fill="#7fa5f0" font-size="8">${Math.round((g/3)*niceMaxBw)}</text>`;
+    svg += `<text x="${W-PAD.right+6}" y="${y+3}" text-anchor="start" fill="#6f9ce8" font-size="8">${Math.round((g/3)*niceMaxBw)}</text>`;
   }
 
   const accPts = [], bwPts = [];
@@ -20460,7 +20707,7 @@ function gaBuildAreaComboChart(containerId) {
     const bwY  = barBase - (bw[i]/niceMaxBw)*cH;
     accPts.push({x:cx, y:accY, val:acc[i]});
     bwPts.push({x:cx, y:bwY, val:bw[i]});
-    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#999" font-size="7.5">${y}</text>`;
+    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#ffffff" font-size="7.5">${y}</text>`;
   });
   // Both series share the same x positions but independent y-scales, so their lines
   // frequently run close together or cross. Rather than always placing both labels
@@ -20486,15 +20733,15 @@ function gaBuildAreaComboChart(containerId) {
   if (bwPts.length>1) svg += `<path d="${areaPath(bwPts)}" fill="url(#ga-area-bw-grad-${gid})" stroke="none"/>`;
 
   if (accPts.length>1) svg += `<path d="${accPts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="#ff7900" stroke-width="2.2"/>`;
-  if (bwPts.length>1) svg += `<path d="${bwPts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="#2f6fed" stroke-width="2.2"/>`;
+  if (bwPts.length>1) svg += `<path d="${bwPts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="#2159c9" stroke-width="2.2"/>`;
 
   accPts.forEach(p => {
     svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#ff7900"/>`;
     if (p.val>0) accLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${p.labelY.toFixed(1)}" text-anchor="middle" fill="#ff7900" font-size="9.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
   });
   bwPts.forEach(p => {
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#2f6fed"/>`;
-    if (p.val>0) bwLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${p.labelY.toFixed(1)}" text-anchor="middle" fill="#2f6fed" font-size="9.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
+    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#2159c9"/>`;
+    if (p.val>0) bwLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${p.labelY.toFixed(1)}" text-anchor="middle" fill="#2159c9" font-size="9.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
   });
 
   svg += axisLabelsSvg + accLabelsSvg + bwLabelsSvg;
@@ -20534,12 +20781,12 @@ function gaBuildGeoAreaChart(containerId) {
   const bcBw  = areas.map(a => Math.round(byArea[a].bcBw*10)/10);
   const bw    = areas.map((a,i) => Math.round((tpBw[i]+bcBw[i])*10)/10);
   const gid = containerId.replace(/[^a-zA-Z0-9_-]/g,'');
-  const COL_TP = '#5b8def', COL_BC = '#ff7900';
+  const COL_TP = '#2159c9', COL_BC = '#ff7900';
 
   const W = wrap.clientWidth || 900, H = 240;
-  const PAD = { top:36, right:36, bottom:26, left:34 };
+  const PAD = { top:44, right:36, bottom:26, left:34 };
   const cW = W-PAD.left-PAD.right, cH = H-PAD.top-PAD.bottom;
-  const n = areas.length, groupW = n ? cW/n : cW, barW = Math.min(groupW*0.5, 34), barBase = PAD.top+cH;
+  const n = areas.length, groupW = n ? cW/n : cW, barW = Math.min(groupW*0.28, 20), barGap = 3, barBase = PAD.top+cH;
   const maxAcc = Math.max(...acc, 1);
   const niceMaxAcc = Math.ceil(maxAcc/5)*5 || 5;
   const maxBw = Math.max(...bw, 1);
@@ -20549,7 +20796,7 @@ function gaBuildGeoAreaChart(containerId) {
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;font-family:IBM Plex Mono, monospace">`;
   svg += `<defs>
     <linearGradient id="ga-gbar-tp-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8bb0f5"/>
+      <stop offset="0%" stop-color="#6f9ce8"/>
       <stop offset="100%" stop-color="${COL_TP}"/>
     </linearGradient>
     <linearGradient id="ga-gbar-bc-grad-${gid}" x1="0" y1="0" x2="0" y2="1">
@@ -20572,12 +20819,11 @@ function gaBuildGeoAreaChart(containerId) {
     const y = barBase-(g/3)*cH;
     svg += `<text x="${W-PAD.right+6}" y="${y+3}" text-anchor="start" fill="#9aa6b8" font-size="8">${Math.round((g/3)*niceMaxBw)}</text>`;
   }
-  svg += `<text x="${PAD.left}" y="${(PAD.top-18).toFixed(1)}" text-anchor="start" fill="#8a8f98" font-size="8" font-weight="700" letter-spacing="0.5">ACCOUNTS (TP + BC stacked)</text>`;
-  svg += `<text x="${W-PAD.right}" y="${(PAD.top-18).toFixed(1)}" text-anchor="end" fill="#8a8f98" font-size="8" font-weight="700" letter-spacing="0.5">BANDWIDTH (GBPS)</text>`;
 
   const tpLinePts = [], bcLinePts = [];
   const barLabelYsG = [];
   let barLabelsSvg = '', axisLabelsSvg = '', lineLabelsSvg = '', crownSvg = '';
+  let topIdxCx = 0;
   const MIN_GAP_G = 13;
   areas.forEach((a,i) => {
     const cx = PAD.left + i*groupW + groupW/2;
@@ -20585,12 +20831,15 @@ function gaBuildGeoAreaChart(containerId) {
     const tpH = Math.max((tpVal/niceMaxAcc)*cH, tpVal>0?2:0);
     const bcH = Math.max((bcVal/niceMaxAcc)*cH, bcVal>0?2:0);
     const tpTop = barBase - tpH;
-    const bcTop = tpTop - bcH;
+    const bcTop = barBase - bcH;
+    const tpX = cx - barGap/2 - barW;
+    const bcX = cx + barGap/2;
     const isTop = i === topIdx;
-    if (tpVal>0) svg += `<rect x="${(cx-barW/2).toFixed(1)}" y="${tpTop.toFixed(1)}" width="${barW}" height="${tpH.toFixed(1)}" rx="2" fill="url(#ga-gbar-tp-grad-${gid})"><title>${gaEsc(a)}: ${tpVal} Triple Play accounts, ${tpBw[i]} Gbps (On-Air)</title></rect>`;
-    if (bcVal>0) svg += `<rect x="${(cx-barW/2).toFixed(1)}" y="${bcTop.toFixed(1)}" width="${barW}" height="${bcH.toFixed(1)}" rx="2" fill="url(#ga-gbar-bc-grad-${gid})"><title>${gaEsc(a)}: ${bcVal} Business Complex accounts, ${bcBw[i]} Gbps (On-Air)</title></rect>`;
-    if (isTop) crownSvg += `<text x="${cx.toFixed(1)}" y="${(bcTop-20).toFixed(1)}" text-anchor="middle" font-size="12">🏆</text>`;
-    const barLabelYg = bcTop-6;
+    if (tpVal>0) svg += `<rect x="${tpX.toFixed(1)}" y="${tpTop.toFixed(1)}" width="${barW}" height="${tpH.toFixed(1)}" rx="2" fill="url(#ga-gbar-tp-grad-${gid})"><title>${gaEsc(a)}: ${tpVal} Triple Play accounts, ${tpBw[i]} Gbps (On-Air)</title></rect>`;
+    if (bcVal>0) svg += `<rect x="${bcX.toFixed(1)}" y="${bcTop.toFixed(1)}" width="${barW}" height="${bcH.toFixed(1)}" rx="2" fill="url(#ga-gbar-bc-grad-${gid})"><title>${gaEsc(a)}: ${bcVal} Business Complex accounts, ${bcBw[i]} Gbps (On-Air)</title></rect>`;
+    const topBarY = Math.min(tpTop, bcTop);
+    if (isTop) { topIdxCx = cx; }
+    const barLabelYg = topBarY-6;
     barLabelYsG.push(totalVal>0 ? barLabelYg : null);
     if (totalVal>0) barLabelsSvg += `<text x="${cx.toFixed(1)}" y="${barLabelYg.toFixed(1)}" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${totalVal}</text>`;
     const tpBwVal = tpBw[i], bcBwVal = bcBw[i];
@@ -20598,7 +20847,7 @@ function gaBuildGeoAreaChart(containerId) {
     const bcLy = barBase - (bcBwVal/niceMaxBw)*cH;
     tpLinePts.push({x:cx,y:tpLy,val:tpBwVal,area:a});
     bcLinePts.push({x:cx,y:bcLy,val:bcBwVal,area:a});
-    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#999" font-size="7.5">${gaEsc(a)}</text>`;
+    axisLabelsSvg += `<text x="${cx.toFixed(1)}" y="${(barBase+13).toFixed(1)}" text-anchor="middle" fill="#FFFFFF" font-size="7.5">${gaEsc(a)}</text>`;
   });
   if (tpLinePts.length>1) {
     svg += `<path d="${gaSmoothPath(tpLinePts)}" fill="none" stroke="${COL_TP}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-gline-shadow-tp-${gid})"/>`;
@@ -20606,40 +20855,61 @@ function gaBuildGeoAreaChart(containerId) {
   if (bcLinePts.length>1) {
     svg += `<path d="${gaSmoothPath(bcLinePts)}" fill="none" stroke="${COL_BC}" stroke-width="2.2" stroke-dasharray="5,3" stroke-linecap="round" filter="url(#ga-gline-shadow-bc-${gid})"/>`;
   }
+  const POINT_GAP_G = 10; // min clearance a line-value label must keep from its own marker circle
   const tpLabelYsG = [];
   tpLinePts.forEach((p,i) => {
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_TP}" stroke-width="1.4"/>`;
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_TP}"><title>${gaEsc(p.area)}: ${p.val} Gbps TP (On-Air)</title></circle>`;
+    if (p.val>0) {
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_TP}" stroke-width="1.4"/>`;
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_TP}"><title>${gaEsc(p.area)}: ${p.val} Gbps TP (On-Air)</title></circle>`;
+    } else {
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_TP}" fill-opacity="0.32"><title>${gaEsc(p.area)}: ${p.val} Gbps TP (On-Air)</title></circle>`;
+    }
     if (p.val>0) {
       // Keep the TP bandwidth label from colliding with the accounts total label
       // directly above the same bar (e.g. an area that leads on both accounts and Gbps).
-      let ly = p.y-8;
+      let ly = p.y-POINT_GAP_G;
       const barY = barLabelYsG[i];
-      if (barY!==null && Math.abs(ly-barY) < MIN_GAP_G) ly = p.y+14;
+      if (barY!==null && Math.abs(ly-barY) < MIN_GAP_G) ly = p.y+POINT_GAP_G+6;
+      // Final guard: never let the label creep back within POINT_GAP_G of its own
+      // marker circle, no matter which branch above set it (was causing the label
+      // to visually merge with the donut marker, e.g. "39.7" reading as cut in half).
+      if (Math.abs(ly-p.y) < POINT_GAP_G) ly = ly<=p.y ? p.y-POINT_GAP_G : p.y+POINT_GAP_G;
       tpLabelYsG.push(ly);
       lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_TP}" font-size="8.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
     } else {
       tpLabelYsG.push(null);
     }
   });
+  const bcLabelYsG = [];
   bcLinePts.forEach((p,i) => {
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_BC}" stroke-width="1.4"/>`;
-    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_BC}"><title>${gaEsc(p.area)}: ${p.val} Gbps BC (On-Air)</title></circle>`;
+    if (p.val>0) {
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="var(--card)" stroke="${COL_BC}" stroke-width="1.4"/>`;
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_BC}"><title>${gaEsc(p.area)}: ${p.val} Gbps BC (On-Air)</title></circle>`;
+    } else {
+      svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2" fill="${COL_BC}" fill-opacity="0.32"><title>${gaEsc(p.area)}: ${p.val} Gbps BC (On-Air)</title></circle>`;
+    }
     if (p.val>0) {
       // Same fix as the yearly combo chart: don't let the below-point default
       // land on top of the area-name axis labels when BC bandwidth is small,
       // then clear it of the bar's total-accounts label and the TP line label.
-      let ly = p.y+15;
-      if (ly > barBase-4) ly = p.y-8;
+      let ly = p.y+POINT_GAP_G+5;
+      if (ly > barBase-4) ly = p.y-POINT_GAP_G;
       const barY = barLabelYsG[i];
       if (barY!==null && Math.abs(ly-barY) < MIN_GAP_G) ly = ly<=barY ? barY-MIN_GAP_G : barY+MIN_GAP_G;
       const tpLabelY = tpLabelYsG[i];
       if (tpLabelY!==null && Math.abs(ly-tpLabelY) < MIN_GAP_G) ly = ly<=tpLabelY ? tpLabelY-MIN_GAP_G : tpLabelY+MIN_GAP_G;
-      if (ly > barBase-4) ly = barBase-4;
+      // Final guard: keep clear of this point's own marker circle even if the
+      // collision fixes above (bar/TP-label avoidance) pushed the label back onto
+      // it — this was the cause of labels like Alex's "0.2" landing inside the ring.
+      if (Math.abs(ly-p.y) < POINT_GAP_G) ly = ly<=p.y ? p.y-POINT_GAP_G : p.y+POINT_GAP_G;
+      if (ly > barBase+6) ly = barBase+6;
+      bcLabelYsG.push(ly);
       lineLabelsSvg += `<text x="${p.x.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="${COL_BC}" font-size="8.5" font-weight="700" paint-order="stroke" stroke="var(--card)" stroke-width="3.2" stroke-linejoin="round">${p.val}</text>`;
+    } else {
+      bcLabelYsG.push(null);
     }
   });
-  svg += barLabelsSvg + axisLabelsSvg + lineLabelsSvg + crownSvg;
+  svg += barLabelsSvg + axisLabelsSvg + lineLabelsSvg;
   svg += '</svg>';
   wrap.innerHTML = svg;
 
@@ -20648,14 +20918,20 @@ function gaBuildGeoAreaChart(containerId) {
     const totalTpAcc = tpAcc.reduce((s,v)=>s+v,0);
     const totalBcAcc = bcAcc.reduce((s,v)=>s+v,0);
     const totalBw = Math.round(bw.reduce((s,v)=>s+v,0)*10)/10;
+    const statBoxStyle = (hex) => `border:1px solid ${hex}55;background:${hex}17;color:${hex}`;
     footer.innerHTML = `
-      <span class="ga-cagr-pill" style="color:${COL_TP};border-color:${COL_TP}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12l2 2 4-4"/></svg> TP Accounts</span>
-      <span class="ga-cagr-val" style="color:${COL_TP}">${totalTpAcc}</span>
-      <span class="ga-cagr-pill orange"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12l2 2 4-4"/></svg> BC Accounts</span>
-      <span class="ga-cagr-val orange">${totalBcAcc}</span>
-      <span class="ga-cagr-pill blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><circle cx="12" cy="20" r="1"/></svg> Total Bandwidth</span>
-      <span class="ga-cagr-val blue">${totalBw} Gbps</span>
-      <span style="font-size:10.5px;color:#8a8f9c;">🏆 Top area: <b style="color:var(--text)">${gaEsc(areas[topIdx])}</b> (${acc[topIdx]} accounts)</span>`;
+      <div class="ga-stat-box" style="${statBoxStyle(COL_TP)}">
+        <span class="ga-stat-label">TP ACCOUNTS</span>
+        <span class="ga-stat-value">${totalTpAcc}</span>
+      </div>
+      <div class="ga-stat-box" style="${statBoxStyle(COL_BC)}">
+        <span class="ga-stat-label">BC ACCOUNTS</span>
+        <span class="ga-stat-value">${totalBcAcc}</span>
+      </div>
+      <div class="ga-stat-box" style="${statBoxStyle(COL_TP)}">
+        <span class="ga-stat-label">TOTAL BANDWIDTH</span>
+        <span class="ga-stat-value">${totalBw} Gbps</span>
+      </div>`;
   }
 }
 
@@ -20782,22 +21058,22 @@ function gaBuildSiteCards(containerId) {
 function gaBuildCharts() {
   gaRecomputeFromRAW();
   gaBuildComboChart('ga-tp-acc-chart', GA_TP_ACC, '#ff7900');
-  gaBuildComboChart('ga-tp-bw-chart',  GA_TP_BW,  '#2f6fed');
-  gaBuildComboChart('ga-bc-acc-chart', GA_BC_ACC, '#ff7900');
-  gaBuildComboChart('ga-bc-bw-chart',  GA_BC_BW,  '#2f6fed');
+  gaBuildComboChart('ga-tp-bw-chart',  GA_TP_BW,  '#2159c9');
+  gaBuildComboChart('ga-bc-acc-chart', GA_BC_ACC, '#ff7900', 1, undefined, undefined, '#FFFFFF');
+  gaBuildComboChart('ga-bc-bw-chart',  GA_BC_BW,  '#2159c9', 1, undefined, undefined, '#FFFFFF');
   gaBuildUpgradeChart();
   gaBuildSiteCards();
   gaBuildUpgradeSummary();
   gaBuildHeaderKpis();
 
   // ── V0166: also render into the Growth Report copy embedded in the Summary tab ──
-  gaBuildComboChart('ga-tp-acc-chart-sc', GA_TP_ACC, '#ff7900');
-  gaBuildComboChart('ga-tp-bw-chart-sc',  GA_TP_BW,  '#2f6fed', 1, '#5b8def');
-  gaBuildComboChart('ga-bc-acc-chart-sc', GA_BC_ACC, '#ff7900');
-  gaBuildComboChart('ga-bc-bw-chart-sc',  GA_BC_BW,  '#2f6fed', 1, '#5b8def');
+  gaBuildComboChart('ga-tp-acc-chart-sc', GA_TP_ACC, '#ff7900', 1, undefined, 240, '#FFFFFF');
+  gaBuildComboChart('ga-tp-bw-chart-sc',  GA_TP_BW,  '#2159c9', 1, '#6f9ce8', 240, '#FFFFFF');
+  gaBuildComboChart('ga-bc-acc-chart-sc', GA_BC_ACC, '#ff7900', 1, undefined, undefined, '#FFFFFF');
+  gaBuildComboChart('ga-bc-bw-chart-sc',  GA_BC_BW,  '#2159c9', 1, '#6f9ce8', undefined, '#FFFFFF');
   gaBuildUpgradeChart('ga-upgrade-chart-sc');
   gaBuildSiteCards('ga-site-grid-sc');
-  gaBuildUpgradeSummary('ga-summary-card-sc');
+  gaBuildSiteDetailKpis('ga-site-kpis-sc');
   gaBuildHeaderKpis('ga-header-kpis-sc');
   gaBuildYearlyComboChart('ga-yearly-combo-chart-sc');
   gaBuildAreaComboChart('ga-area-combo-chart-sc');
@@ -20835,6 +21111,41 @@ const GA_ICONS = {
   hub:        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/></svg>',
 };
 
+function gaBuildSiteDetailKpis(containerId) {
+  containerId = containerId || 'ga-site-kpis-sc';
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const items = GA_UPGRADE_SITES;
+  const sitesCount = items.length;
+  const totalBefore = items.reduce((s,d) => s + d.before, 0);
+  const totalAfter = items.reduce((s,d) => s + d.after, 0);
+  const totalDelta = totalAfter - totalBefore;
+  const pctIncrease = totalBefore > 0 ? (totalDelta/totalBefore)*100 : 0;
+
+  // Fastest-growing site by relative uplift (matches the +% badges on the site cards)
+  let top = items[0];
+  let topPct = -Infinity;
+  items.forEach(d => {
+    const p = d.before > 0 ? (d.delta/d.before)*100 : 100;
+    if (p > topPct) { topPct = p; top = d; }
+  });
+
+  el.innerHTML = [
+    { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9 12l2 2 4-4"/></svg>', lbl:'Sites Upgraded', val: sitesCount, sub:'All completed', bg:'var(--orange-dim)', fg:'#ff7900' },
+    { icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>', lbl:'Total Capacity Added', val: '+'+totalDelta.toFixed(2)+' <span class="unit">Gbps</span>', sub:'Before → after', bg:'var(--orange-dim)', fg:'#ff7900' },
+    { icon: GA_ICONS.trend, lbl:'Total Capacity Increase', val: '+'+pctIncrease.toFixed(1)+'%', sub:'vs baseline', bg:'rgba(46,160,67,0.14)', fg:'#2ea043' },
+    { icon: '🏆', lbl:'Fastest-Growing Site', val: '+'+Math.round(topPct)+'%', sub: gaEsc(top.name), bg:'rgba(139,92,246,0.16)', fg:'#a78bfa' },
+  ].map(k => `
+    <div class="ga-kpi">
+      <div class="ga-kpi-icon" style="background:${k.bg};color:${k.fg}">${k.icon}</div>
+      <div class="ga-kpi-body">
+        <div class="ga-kpi-lbl">${k.lbl}</div>
+        <div class="ga-kpi-val">${k.val}</div>
+        <div class="ga-kpi-sub">${k.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
 function gaBuildHeaderKpis(containerId) {
   containerId = containerId || 'ga-header-kpis';
   const el = document.getElementById(containerId);
@@ -20850,8 +21161,8 @@ function gaBuildHeaderKpis(containerId) {
     { icon: GA_ICONS.users, lbl:'Total Accounts', val: totalAccounts, sub:'All accounts', bg:'var(--orange-dim)', fg:'#ff7900' },
     { icon: GA_ICONS.wifi,  lbl:'Total Bandwidth', val: onAirBW.toFixed(1)+' Gbps', sub:'On-air capacity', bg:'var(--orange-dim)', fg:'#ff7900' },
     { icon: GA_ICONS.trend, lbl:'Bandwidth Growth', val: (bwGrowth>=0?'+':'')+bwGrowth.toFixed(1)+' Gbps', sub: yearRange, bg:'rgba(46,160,67,0.14)', fg:'#2ea043' },
-    { icon: GA_ICONS.hub,   lbl:'Capacity Upgrades', val: GA_UPGRADE_SITES.length, sub:'Completed sites', bg:'rgba(139,92,246,0.16)', fg:'#a78bfa' },
-    { icon: GA_ICONS.bars,  lbl:'Years Covered', val: years.length, sub: yearRange, bg:'var(--orange-dim)', fg:'#ff7900' },
+    { icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="16 13 12 9 8 13"/><line x1="12" y1="9" x2="12" y2="16"/></svg>', lbl:'Capacity Upgrades', val: GA_UPGRADE_SITES.length, sub:'Completed sites', bg:'rgba(139,92,246,0.16)', fg:'#a78bfa' },
+    { icon: GA_ICONS.calendar, lbl:'Years Covered', val: years.length, sub: yearRange, bg:'var(--orange-dim)', fg:'#ff7900' },
   ].map(k => `
     <div class="ga-kpi">
       <div class="ga-kpi-icon" style="background:${k.bg};color:${k.fg}">${k.icon}</div>
